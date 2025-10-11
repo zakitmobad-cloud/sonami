@@ -1,0 +1,30 @@
+{
+  "app": {
+    "title": "Modèle Material UI",
+    "subtitle": "Avec Changement de Thème et Internationalisation"
+  },
+  "header": {
+    "theme": "Thème",
+    "language": "Langue"
+  },
+  "home": {
+    "welcome": "Bienvenue dans votre Application",
+    "description": "Ceci est un modèle utilisant Material UI, Vite, TypeScript avec support de thème sombre/clair et i18n.",
+    "features": {
+      "title": "Fonctionnalités",
+      "theme": "Thème Sombre et Clair",
+      "themeDesc": "Basculez entre les modes sombre et clair avec des thèmes de couleurs hex",
+      "i18n": "Internationalisation",
+      "i18nDesc": "Support pour plusieurs langues (Anglais, Espagnol, Français)",
+      "mui": "Material UI",
+      "muiDesc": "Composants beaux et réactifs",
+      "typescript": "TypeScript",
+      "typescriptDesc": "Expérience de développement sûre par type"
+    }
+  },
+  "languages": {
+    "en": "Anglais",
+    "es": "Espagnol",
+    "fr": "Français"
+  }
+}

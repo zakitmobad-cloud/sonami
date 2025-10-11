@@ -1,0 +1,63 @@
+{
+  "app": {
+    "title": "Sonami",
+    "subtitle": "Sonami Layer 2"
+  },
+  "header": {
+    "roadmap": "RoadMap",
+    "howToBuy": "How to Buy",
+    "tokenomics": "Tokenomics",
+    "faqs": "FAQs",
+    "buy": "Buy SNMI",
+    "theme": "Theme",
+    "language": "Language",
+    "menu": "Menu"
+  },
+  "home": {
+    "leftTopBox": {
+      "heading": "Solana Layer 2 has arrived //",
+      "button": "Launching on major exchanges",
+      "mainnet": "SoNami Mainnet",
+      "stackingReward": "62% staking rewards"
+    },
+    "marqueeText": "Best ICO // The Future Of Crypto // Best Meme Coin // Huge Presale Rewards // Starlight Yield // No black holes in our galaxy // Best ICO // The Future Of Crypto // Best Meme Coin // Huge Presale Rewards // Starlight Yield // No black holes in our galaxy //",
+    "leftBottomBox": {
+      "title": "Sonami\nThe Solana L2",
+      "tags": [
+        "Solana's first Layer 2 Chain",
+        "Infinite scale",
+        "best meme coin",
+        "Multi-Chain Compatibility"
+      ],
+      "description": "Sonami is the next evolution in blockchain technology, designed to unlock the full potential of the Solana ecosystem. Experience unmatched scalability and a future-proof network built to redefine Solana's capabilities."
+    },
+    "utilityButton1": "The Chain",
+    "utilityButton2": "Utility",
+    "utilityButton3": "Dev Updates"
+  },
+  "connectWallet": {
+    "stageRaised": "Stage Raised",
+    "listingPrice": "Listing Price",
+    "stage": "Stage",
+    "targetRaised": "{{percentage}}% of the target raised",
+    "currentPrice": "Current Price:",
+    "nextPrice": "Next Price:",
+    "auditedBy": "Audited By:",
+    "hash": "<highlight>SOL</highlight> 0x6bd...1ffe buys XYZ for <highlight>8 USDT</highlight> 0x9d5...1ffe buys XYZ for <highlight>8 USDT</highlight>",
+    "balance": "Balance",
+    "connectWallet": "Connect Wallet",
+    "dontHaveWallet": "Don't have a wallet?",
+    "howToBuy": "How To Buy?"
+  },
+  "disclaimer": "Disclaimer",
+  "disclaimerText": "Always do your own research. Nothing here is financial advice. This is a meme coin",
+  "copyRight": "© 2025 Sonami All rights reserved.",
+  "terms": "Terms & Conditions",
+  "privacy": "Privacy Policy",
+  "cookies": "Cookies",
+  "languages": {
+    "en": "English",
+    "es": "Spanish",
+    "fr": "French"
+  }
+}

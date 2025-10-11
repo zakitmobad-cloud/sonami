@@ -1,0 +1,30 @@
+{
+  "app": {
+    "title": "Plantilla Material UI",
+    "subtitle": "Con Cambio de Tema e Internacionalización"
+  },
+  "header": {
+    "theme": "Tema",
+    "language": "Idioma"
+  },
+  "home": {
+    "welcome": "Bienvenido a tu Aplicación",
+    "description": "Esta es una plantilla usando Material UI, Vite, TypeScript con soporte de tema oscuro/claro e i18n.",
+    "features": {
+      "title": "Características",
+      "theme": "Tema Oscuro y Claro",
+      "themeDesc": "Alterna entre modos oscuro y claro con temas de colores hex",
+      "i18n": "Internacionalización",
+      "i18nDesc": "Soporte para múltiples idiomas (Inglés, Español, Francés)",
+      "mui": "Material UI",
+      "muiDesc": "Componentes hermosos y responsivos",
+      "typescript": "TypeScript",
+      "typescriptDesc": "Experiencia de desarrollo con tipado seguro"
+    }
+  },
+  "languages": {
+    "en": "Inglés",
+    "es": "Español",
+    "fr": "Francés"
+  }
+}

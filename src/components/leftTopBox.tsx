@@ -51,8 +51,8 @@ export default function LeftTopBox({
         <Box
           sx={{
             position: "absolute",
-            right: "-9px",
-            top: "-14px",
+            right: "-48px",
+            top: "-17px",
             width: "62px",
             height: "62px",
             rotate: "10deg",
@@ -64,7 +64,7 @@ export default function LeftTopBox({
           <img src='/dev/sol.png' style={{ rotate: "-9.3deg" }} />
         </Box>
       )}
-      {!matchesSM && (
+      {/* {!matchesSM && (
         <Box
           sx={{
             position: "absolute",
@@ -79,11 +79,11 @@ export default function LeftTopBox({
           }}
         >
           <img
-            src='/dev/eth.png'
+            src='/dev/sol.png'
             style={{ rotate: "-9.3deg", width: "62px", height: "62px" }}
           />
         </Box>
-      )}
+      )} */}
       <Grid
         container
         justifyContent={"space-between"}

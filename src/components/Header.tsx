@@ -200,7 +200,7 @@ const Header = () => {
           gap: 1,
         }}
       >
-        {langInput}
+        {/* {langInput} */}
         {themeToggleButton}
         <IconButton onClick={() => setOpenSidebar(false)}>
           <CloseIcon />
@@ -257,7 +257,7 @@ const Header = () => {
         ) : (
           <Box sx={{ display: "flex", alignItems: "center", gap: "20px" }}>
             {buyButton}
-            {langInput}
+            {/* {langInput} */}
             {/* {themeToggleButton} */}
           </Box>
         )}

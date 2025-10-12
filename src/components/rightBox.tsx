@@ -23,6 +23,7 @@ import { formatAmount } from "@/lib/utils";
 
 const servers = [
   { label: "Ethereum Mainnet", value: "eth", icon: "/dev/ether.png" },
+  { label: "Solana Mainnet", value: "sol", icon: "/dev/solana.png" },
 ];
 export default function RightBox() {
   const matches350 = useMediaQuery((theme) => theme.breakpoints.down(350));
@@ -30,7 +31,7 @@ export default function RightBox() {
   const { t } = useTranslation();
   const px = { xs: "10px", sm: "20px" };
   const userBalance = 0;
-  const [selectedServer, setSelectedServer] = useState("eth");
+  const [selectedServer, setSelectedServer] = useState("sol");
   const [inputAmount, setInputAmount] = useState("");
   const currency = "$";
   const stageRaised = formatAmount(15427953);
@@ -41,7 +42,7 @@ export default function RightBox() {
   const currentPrice = 0.0055;
   const nextPrice = 0.0056;
 
-  const usdToEth = 4354.34;
+  const solToUSD = 175.49;
 
   const STEP = 0.1;
 
@@ -354,7 +355,7 @@ export default function RightBox() {
         </Grid>
       </Grid>
       {/* AuditedBy */}
-      <Grid
+      {/* <Grid
         container
         alignItems='center'
         justifyContent='space-between'
@@ -414,7 +415,7 @@ export default function RightBox() {
             </Grid>
           </Grid>
         </Grid>
-      </Grid>
+      </Grid> */}
       {/* hash */}
       <>
         {/* divider */}
@@ -450,7 +451,7 @@ export default function RightBox() {
       </>
       {/* input */}
       <>
-        <Box sx={{ width: "100%", px: px, mt: "25px" }}>
+        {/* <Box sx={{ width: "100%", px: px, mt: "25px" }}>
           <TextField
             select
             fullWidth
@@ -467,12 +468,12 @@ export default function RightBox() {
           >
             {servers.map((item, i) => (
               <MenuItem value={item.value} key={i}>
-                <img src={item.icon} style={{ marginRight: "8px" }} />{" "}
+                <img src={item.icon} style={{ marginRight: "8px",width:"28px",height:"28px" }} />{" "}
                 {item.label}
               </MenuItem>
             ))}
           </TextField>
-        </Box>
+        </Box> */}
         {/* conversion inputs */}
         <Box sx={{ width: "100%", px: px, mt: "15px" }}>
           <Grid container gap='20px'>
@@ -513,6 +514,7 @@ export default function RightBox() {
                                       (s) => s.value === selectedServer
                                     ).icon
                                   }
+                                  style={{ width: "28px", height: "28px" }}
                                 />
                               </Grid>
                             )}
@@ -553,7 +555,7 @@ export default function RightBox() {
                 variant='outlined'
                 value={
                   inputAmount && !isNaN(parseFloat(inputAmount))
-                    ? (Number(inputAmount) / usdToEth).toFixed(6)
+                    ? (Number(inputAmount) / solToUSD).toFixed(6)
                     : ""
                 }
                 slotProps={{
@@ -567,6 +569,11 @@ export default function RightBox() {
                               servers.find((s) => s.value === selectedServer)
                                 .icon
                             }
+                            style={{
+                              width: "28px",
+                              height: "28px",
+                              borderRadius: "50%",
+                            }}
                           />
                         </InputAdornment>
                       ),
@@ -617,7 +624,7 @@ export default function RightBox() {
                       lineHeight: "23px",
                     }}
                   >
-                    {userBalance} ETH
+                    {userBalance} SOL
                   </Typography>
                 </Grid>
               </Grid>
@@ -642,7 +649,7 @@ export default function RightBox() {
                       lineHeight: "23px",
                     }}
                   >
-                    1 ETH
+                    1 SOL
                   </Typography>
                 </Grid>
                 <Grid>
@@ -659,7 +666,7 @@ export default function RightBox() {
                     }}
                   >
                     {currency}
-                    {formatAmount(usdToEth)}
+                    {formatAmount(solToUSD)}
                   </Typography>
                 </Grid>
               </Grid>

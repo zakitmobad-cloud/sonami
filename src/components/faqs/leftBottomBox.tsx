@@ -28,7 +28,10 @@ export default function LeftBottomBox() {
   return (
     <LeftBottomBoxLayout
       sx={{
-        px: 0,
+        background: (theme) =>
+          matchesSM ? "unset" : "url(/dev/main-vector.png)",
+
+        p: 0,
       }}
     >
       <Grid
@@ -44,7 +47,7 @@ export default function LeftBottomBox() {
             md: matchesSM ? "24px 0px 35px 0px" : "66px 0px 35px 0px",
           },
           px: { xs: "0px", md: matchesSM ? "0px" : "17px" },
-          maxHeight: "390px",
+          maxHeight: matchesSM ? "unset" : "390px",
           overflowY: "auto",
           "::-webkit-scrollbar": { width: "16px" },
           "::-webkit-scrollbar-track": {
@@ -78,6 +81,7 @@ export default function LeftBottomBox() {
         {faqs.map((step, i) => (
           <FAQ
             key={i}
+            index={i}
             odd={i % 2 === 0}
             title={step.title}
             description={step.description}

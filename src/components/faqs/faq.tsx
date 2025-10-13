@@ -1,29 +1,46 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, useMediaQuery } from "@mui/material";
 import { useState } from "react";
 
 export default function FAQ({
+  index,
   odd = false,
   title,
   description,
 }: {
+  index: number;
   odd: boolean;
   title: string;
   description: string;
 }) {
-  const [open, setOpen] = useState(false);
+  const matchesSM = useMediaQuery((theme) => theme.breakpoints.down(1150));
+
+  const [open, setOpen] = useState(index === 0 ? true : false);
   return (
     <Box
       sx={{
-        background: odd
-          ? "url(/dev/faq-top-background.png)"
-          : "url(/dev/faq-bottom-background.png)",
+        background: (theme) =>
+          matchesSM
+            ? `${theme.palette.background.paper}80`
+            : odd
+            ? "url(/dev/faq-top-background.png)"
+            : "url(/dev/faq-bottom-background.png)",
         backgroundSize: "100% 100%",
-        // backdropFilter: "blur(14px)",
+        backdropFilter: "blur(14px)",
+        border: (theme) =>
+          matchesSM ? `2px solid ${theme.palette.background.paper}` : 0,
         pl: { xs: "10px", md: "24px" },
         pr: "10px",
-        pt: odd ? "26px" : open ? "95px" : "55px",
-        pb: odd ? "75px" : open ? "85px" : "26px",
-        mt: odd ? "20px" : "0px",
+        pt: matchesSM ? "20px" : odd ? "26px" : open ? "95px" : "55px",
+        pb: matchesSM
+          ? "20px"
+          : odd
+          ? open
+            ? "75px"
+            : "55px"
+          : open
+          ? "25px"
+          : "46px",
+        mt: matchesSM ? "20px" : odd ? "20px" : "0px",
       }}
     >
       <Typography
@@ -36,6 +53,7 @@ export default function FAQ({
           textTransform: "uppercase",
           lineHeight: "25px",
           cursor: "pointer",
+          width: "100%",
         }}
         onClick={() => setOpen((o) => !o)}
       >

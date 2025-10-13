@@ -7,6 +7,8 @@ import {
   useMediaQuery,
   useTheme,
   Button,
+  AvatarGroup,
+  Avatar,
 } from "@mui/material";
 import LeftBottomBoxLayout from "../leftBottomBoxLayout";
 import { useTranslation } from "react-i18next";
@@ -81,19 +83,6 @@ export default function LeftBottomBox() {
             md: matchesSM ? "24px 0px 35px 0px" : "56px 0px 35px 0px",
           },
           px: { xs: "5px", md: matchesSM ? "10px" : "17px" },
-          maxHeight: "390px",
-          overflowY: "auto",
-          "::-webkit-scrollbar": { width: "16px" },
-          "::-webkit-scrollbar-track": {
-            backgroundColor: muiTheme.palette.background.paper,
-          },
-          "::-webkit-scrollbar-thumb": {
-            backgroundColor:
-              muiTheme.palette.mode === "dark"
-                ? muiTheme.palette.background.default
-                : muiTheme.palette.primary["600"],
-            borderRadius: "0px",
-          },
         }}
       >
         {steps.map((step, i) => (
@@ -108,7 +97,7 @@ export default function LeftBottomBox() {
               background: `url(${step.img})`,
               backgroundSize: "100% 100%",
               // backdropFilter: "blur(14px)",
-              px: { xs: "10px", md: "20px" },
+              px: { xs: "10px", md: "24px" },
               pt: "26px",
               pb: "70px",
             }}
@@ -141,22 +130,53 @@ export default function LeftBottomBox() {
               {step.description}
             </Typography>
 
-            {step.buttonText && (
+            <Grid sx={{ mt: "34px" }}>
               <Button
                 variant='text'
                 fullWidth={false}
+                disableElevation
                 sx={{
-                  mt: "20px",
+                  visibility: step.buttonText ? "visible" : "hidden",
+                  px: 0,
+                  width: "fit-content",
+                  fontSize: "14px",
+                  fontWeight: 500,
+
                   borderBottom: (theme) =>
                     `1px solid ${
                       theme.palette.mode === "dark" ? "text.primary" : "#000"
                     }`,
+                  color: (theme) =>
+                    theme.palette.mode === "dark" ? "text.primary" : "#000",
                   pb: "4px",
                   borderRadius: 0,
+                  "&:hover": {
+                    backgroundColor: "transparent",
+                  },
                 }}
               >
-                {step.buttonText}
+                {step.buttonText || "Hidden"}
               </Button>
+            </Grid>
+
+            {step.icons && (
+              <Grid sx={{ mt: "20px" }}>
+                <AvatarGroup spacing='small'>
+                  {step.icons.map((icon) => (
+                    <Avatar
+                      src={icon}
+                      sx={{
+                        width: 62,
+                        height: 62,
+                        "&.MuiAvatar-root": {
+                          border: 0,
+                          borderRadius: 0,
+                        },
+                      }}
+                    />
+                  ))}
+                </AvatarGroup>
+              </Grid>
             )}
           </Grid>
         ))}

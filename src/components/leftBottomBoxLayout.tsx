@@ -1,7 +1,13 @@
-import { Box, useMediaQuery } from "@mui/material";
+import { Box, SxProps, useMediaQuery } from "@mui/material";
 import MarqueeBanner from "./marqueText";
 
-const Layout = ({ children }: { children: React.ReactNode }) => {
+const Layout = ({
+  children,
+  sx,
+}: {
+  children: React.ReactNode;
+  sx?: SxProps;
+}) => {
   const matchesSM = useMediaQuery((theme) => theme.breakpoints.down(1150));
   return (
     <Box
@@ -24,6 +30,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
         p: matchesSM ? "20px 10px 70px 10px" : 0,
         position: "relative",
+        ...sx,
       }}
     >
       {!matchesSM && (

@@ -119,5 +119,32 @@
       ],
       "gotIt": "Got it"
     }
+  },
+  "faqs": {
+    "leftTopBox": {
+      "heading": "Solana Layer 2 has arrived //",
+      "button": "Launching on major exchanges",
+      "mainnet": "SoNami Mainnet",
+      "stackingReward": "62% staking rewards"
+    },
+    "title": "FAQs",
+    "faqs": [
+      {
+        "title": "What is SONAMI?",
+        "description": "SoNami is the next evolution in Layer 2 technology, delivering epic customization, efficiency, and performance. It neutralizes the Solana pain points: network congestion, failed transactions, and scalability limitations, while amplifying the strengths of Solana."
+      },
+      {
+        "title": "How Do I Stake?",
+        "description": "Staking SNMI is simple. During the presale, participants can choose to stake their tokens to earn additional rewards. After purchasing SNMI, follow the staking instructions provided on the platform to lock your tokens and maximize your yield."
+      },
+      {
+        "title": "When Can I Claim?",
+        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sit amet risus sollicitudin, lobortis justo non, ultricies quam. In sollicitudin vestibulum tellus vitae finibus.  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sit amet risus sollicitudin, loborti Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sit amet risus sollicitudin, loborti"
+      },
+      {
+        "title": "What Is Solana Layer 2?",
+        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sit amet risus sollicitudin, lobortis justo non, ultricies quam. In sollicitudin vestibulum tellus vitae finibus."
+      }
+    ]
   }
 }

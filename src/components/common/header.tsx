@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import {
   AppBar,
   Toolbar,
@@ -9,7 +10,6 @@ import {
   Box,
   SelectChangeEvent,
   Button,
-  Link,
   SwipeableDrawer,
   useMediaQuery,
   Grid,
@@ -56,15 +56,17 @@ const Header = () => {
   ];
 
   const logo = (
-    <img
-      src='/logo.png'
-      alt='Logo'
-      style={{
-        height: matchesSM ? "37px" : "52px",
-        //width: "auto",
-        marginRight: 16,
-      }}
-    />
+    <Link to='/'>
+      <img
+        src='/logo.png'
+        alt='Logo'
+        style={{
+          height: matchesSM ? "37px" : "52px",
+          //width: "auto",
+          marginRight: 16,
+        }}
+      />
+    </Link>
   );
 
   const buyButton = (
@@ -140,37 +142,43 @@ const Header = () => {
       {menus.map((page) => (
         <Link
           key={page.link}
-          href={page.link}
-          sx={{
-            display: "flex",
+          to={page.link}
+          style={{
             textDecoration: "none",
-            // border: "2px solid #FFFFFF",
-            p: "14px 14px 27px 14px",
-            minWidth: "100px",
-            color: location.pathname === page.link ? "#fff" : "primary.main",
-            background:
-              location.pathname === page.link
-                ? "url(/dev/header-menu-vector-active.png)"
-                : "url(/dev/header-menu-vector.png)",
-            backgroundSize: "100% 100%",
-            backgroundRepeat: "no-repeat",
-            //backgroundColor: "rgba(255, 255, 255, 0.5)",
-            backdropFilter: "blur(13.5px)",
-            //   backgroundColor: (theme) =>
-            //     theme.palette.mode === "dark" ? "#292929" : "primary.light",
           }}
         >
-          <Typography
-            variant='subtitle2'
-            // align='center'
+          <Box
             sx={{
-              fontWeight: 500,
-              textTransform: "uppercase",
-              lineHeight: "15px",
+              display: "flex",
+
+              // border: "2px solid #FFFFFF",
+              p: "14px 14px 27px 14px",
+              minWidth: "100px",
+              color: location.pathname === page.link ? "#fff" : "primary.main",
+              background:
+                location.pathname === page.link
+                  ? "url(/dev/header-menu-vector-active.png)"
+                  : "url(/dev/header-menu-vector.png)",
+              backgroundSize: "100% 100%",
+              backgroundRepeat: "no-repeat",
+              //backgroundColor: "rgba(255, 255, 255, 0.5)",
+              backdropFilter: "blur(13.5px)",
+              //   backgroundColor: (theme) =>
+              //     theme.palette.mode === "dark" ? "#292929" : "primary.light",
             }}
           >
-            {page.label}
-          </Typography>
+            <Typography
+              variant='subtitle2'
+              // align='center'
+              sx={{
+                fontWeight: 500,
+                textTransform: "uppercase",
+                lineHeight: "15px",
+              }}
+            >
+              {page.label}
+            </Typography>
+          </Box>
         </Link>
       ))}
     </Grid>
@@ -212,15 +220,17 @@ const Header = () => {
         </IconButton>
       </Box>
       <Box sx={{ mt: "40px" }}>
-        <img
-          src='/logo.png'
-          alt='Logo'
-          style={{
-            height: "52px",
-            width: "auto",
-            marginRight: 16,
-          }}
-        />
+        <Link to='/'>
+          <img
+            src='/logo.png'
+            alt='Logo'
+            style={{
+              height: "52px",
+              width: "auto",
+              marginRight: 16,
+            }}
+          />
+        </Link>
       </Box>
       <Box sx={{ width: "100%", mt: "30px" }}>{renderMenus}</Box>
       <Box sx={{ mt: "30px", width: "100%" }}>{buyButton}</Box>

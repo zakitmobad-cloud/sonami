@@ -97,7 +97,7 @@ const MarqueeBanner: React.FC<MarqueeBannerProps> = ({
           "@media (prefers-reduced-motion: reduce)": {
             animation: "none",
           },
-          py: "3px",
+          py: "5px",
         }}
       >
         <Box

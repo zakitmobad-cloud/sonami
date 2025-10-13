@@ -5,7 +5,6 @@ import LeftTopBox from "@/components/leftTopBox";
 import LeftBottomBox from "@/components/howToBuy/leftBottomBox";
 import ActionButtons from "@/components/ActionButtons";
 import RightBox from "@/components/rightBox";
-import BottomArea from "@/components/common/footer";
 import Social from "@/components/social";
 const Index = () => {
   const matchesSM = useMediaQuery((theme) => theme.breakpoints.down(1150));
@@ -63,9 +62,6 @@ const Index = () => {
           <LeftBottomBox />
         </Box>
       )}
-      <Box sx={{ width: "100%", py: "20px", px: px }}>
-        <BottomArea />
-      </Box>
     </Layout>
   );
 };

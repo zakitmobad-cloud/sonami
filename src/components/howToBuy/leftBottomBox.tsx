@@ -44,7 +44,13 @@ export default function LeftBottomBox() {
     },
   ];
   return (
-    <LeftBottomBoxLayout>
+    <LeftBottomBoxLayout
+      sx={{
+        background: (theme) =>
+          matchesSM ? "unset" : "url(/dev/main-vector.png)",
+        p: 0,
+      }}
+    >
       {!matchesSM && (
         <Box
           sx={{
@@ -75,14 +81,13 @@ export default function LeftBottomBox() {
         gap={matchesSM ? "30px" : "14px"}
         sx={{
           position: "relative",
-
           zIndex: 1,
           backgroundColor: "transparent",
           m: {
-            xs: "15px 10px",
+            xs: "15px 0px",
             md: matchesSM ? "24px 0px 35px 0px" : "56px 0px 35px 0px",
           },
-          px: { xs: "5px", md: matchesSM ? "10px" : "17px" },
+          px: { xs: "0px", md: matchesSM ? "0px" : "17px" },
         }}
       >
         {steps.map((step, i) => (
@@ -97,7 +102,7 @@ export default function LeftBottomBox() {
               background: `url(${step.img})`,
               backgroundSize: "100% 100%",
               // backdropFilter: "blur(14px)",
-              px: { xs: "10px", md: "24px" },
+              px: { xs: "15px", md: "24px" },
               pt: "26px",
               pb: "70px",
             }}
@@ -160,7 +165,17 @@ export default function LeftBottomBox() {
             </Grid>
 
             {step.icons && (
-              <Grid sx={{ mt: "20px" }}>
+              <Grid
+                sx={{
+                  mt: "20px",
+                  flex: 1,
+                  width: "100%",
+                  display: "flex",
+                  justifyContent:
+                    step.icons.length === 1 ? "flex-end" : "center",
+                  alignItems: "flex-end",
+                }}
+              >
                 <AvatarGroup spacing='small'>
                   {step.icons.map((icon) => (
                     <Avatar

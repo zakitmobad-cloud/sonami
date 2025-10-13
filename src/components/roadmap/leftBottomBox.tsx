@@ -56,10 +56,10 @@ export default function LeftBottomBox() {
           zIndex: 1,
           backgroundColor: "transparent",
           m: {
-            xs: "15px 10px",
+            xs: "15px 0px",
             md: matchesSM ? "24px 0px 35px 0px" : "56px 0px 35px 0px",
           },
-          px: { xs: "5px", md: matchesSM ? "10px" : "17px" },
+          px: { xs: "0px", md: matchesSM ? "0px" : "17px" },
           maxHeight: "390px",
           overflowY: "auto",
           "::-webkit-scrollbar": { width: "16px" },
@@ -147,7 +147,7 @@ export default function LeftBottomBox() {
                 i > 0 ? 0 : `2px solid ${muiTheme.palette.background.paper}`,
               backgroundColor: `${muiTheme.palette.background.paper}80`,
               backdropFilter: "blur(14px)",
-              p: { xs: "5px", md: "20px 35px" },
+              p: { xs: "20px 15px", md: "20px 35px" },
             }}
           >
             <Typography

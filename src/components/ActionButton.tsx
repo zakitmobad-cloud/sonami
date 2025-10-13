@@ -1,17 +1,23 @@
 import { Grid, Typography } from "@mui/material";
+import { Link } from "react-router-dom";
 
 export default function ActionButton({
   icon,
   text,
+  url,
 }: {
   icon: JSX.Element;
   text: string;
+  url: string;
 }) {
   return (
     <Grid
       container
       alignItems='center'
+      component={Link}
+      to={url}
       sx={{
+        textDecoration: "none",
         p: "10px 5px 35px 23px",
         color: (theme) =>
           theme.palette.mode === "dark" ? "text.primary" : "#000",

@@ -20,6 +20,7 @@ import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import { Trans, useTranslation } from "react-i18next";
 import { formatAmount } from "@/lib/utils";
+import HowToBuyDialog from "./howToBuyModal";
 
 const servers = [
   { label: "Ethereum Mainnet", value: "eth", icon: "/dev/ether.png" },
@@ -33,6 +34,8 @@ export default function RightBox() {
   const userBalance = 0;
   const [selectedServer, setSelectedServer] = useState("sol");
   const [inputAmount, setInputAmount] = useState("");
+  const [showBuyInstructionModal, setShowBuyInstructionsModal] =
+    useState(false);
   const currency = "$";
   const stageRaised = formatAmount(15427953);
   const totalRaised = formatAmount(15500000);
@@ -117,8 +120,8 @@ export default function RightBox() {
         background: "url(/dev/connect-wallet-vector.png)",
         backgroundSize: "100% 100%",
         backgroundRepeat: "no-repeat",
-        pt: "30.3px",
-        pb: "55px",
+        pt: "50.3px",
+        pb: "68px",
       }}
     >
       {/*raised title */}
@@ -419,7 +422,7 @@ export default function RightBox() {
       {/* hash */}
       <>
         {/* divider */}
-        <Box sx={{ width: "100%", px: px, mt: "20px" }}>
+        <Box sx={{ width: "100%", px: px, mt: "30px" }}>
           <Divider sx={{ borderColor: "#C1A059" }} />
           <Divider sx={{ borderColor: "#FBD88E" }} />
         </Box>
@@ -475,7 +478,7 @@ export default function RightBox() {
           </TextField>
         </Box> */}
         {/* conversion inputs */}
-        <Box sx={{ width: "100%", px: px, mt: "15px" }}>
+        <Box sx={{ width: "100%", px: px, mt: "29px" }}>
           <Grid container gap='20px'>
             <Grid sx={{ flex: 1 }}>
               <TextField
@@ -709,7 +712,7 @@ export default function RightBox() {
         </Box>
       </>
       {/* connect wallet button */}
-      <Box sx={{ width: "100%", px: px, mt: "20px" }}>
+      <Box sx={{ width: "100%", px: px, mt: "30px" }}>
         <Button
           variant='contained'
           color='primary'
@@ -738,11 +741,11 @@ export default function RightBox() {
         container
         justifyContent='space-between'
         alignItems='center'
-        sx={{ width: "100%", px: px, mt: "31px" }}
+        sx={{ width: "100%", px: px, mt: "41px" }}
         gap='4px'
       >
         <Grid>
-          <Typography
+          {/* <Typography
             variant='subtitle2'
             sx={{
               fontSize: "10px",
@@ -754,7 +757,7 @@ export default function RightBox() {
             }}
           >
             {t("connectWallet.dontHaveWallet")}
-          </Typography>
+          </Typography> */}
         </Grid>
         <Grid>
           <Typography
@@ -767,9 +770,14 @@ export default function RightBox() {
               color: "text.primary",
               cursor: "pointer",
             }}
+            onClick={() => setShowBuyInstructionsModal(true)}
           >
             {t("connectWallet.howToBuy")}
           </Typography>
+          <HowToBuyDialog
+            open={showBuyInstructionModal}
+            onClose={() => setShowBuyInstructionsModal(false)}
+          />
         </Grid>
       </Grid>
     </Box>

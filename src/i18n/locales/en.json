@@ -20,7 +20,7 @@
       "mainnet": "SoNami Mainnet",
       "stackingReward": "62% staking rewards"
     },
-    "marqueeText": "Best ICO // The Future Of Crypto // Best Meme Coin // Huge Presale Rewards // Starlight Yield  // Best ICO // The Future Of Crypto // Best Meme Coin // Huge Presale Rewards // Starlight Yield // No black holes in our galaxy //",
+    "marqueeText": "Best ICO // The Future Of Crypto // Best Meme Coin // Huge Presale Rewards // Starlight Yield  // Best ICO // The Future Of Crypto // Best Meme Coin // Huge Presale Rewards // Starlight Yield //",
     "leftBottomBox": {
       "title": "Sonami\nThe Solana L2",
       "tags": [
@@ -59,5 +59,65 @@
     "en": "English",
     "es": "Spanish",
     "fr": "French"
+  },
+  "roadmap": {
+    "leftTopBox": {
+      "heading": "Sonami: Redefining Layer 2 Scaling //",
+      "button": "Launching on major exchanges",
+      "mainnet": "SoNami Mainnet",
+      "stackingReward": "62% staking rewards"
+    },
+    "leftBottomBox": {
+      "steps": [
+        {
+          "title": "01. Presale Process",
+          "description": "The presale process, which is live now, allows buyers to purchase SNMI tokens pre-listing, ensuring the lowest possible price. At each phase of the presale, the price increases. Staking is also an option for presale buyers looking to maximize."
+        },
+        {
+          "title": "02. TGE, Bridge & Listings",
+          "description": "Post presale, the SNMI token will be deployed on multiple chains allowing presale buyers to bridge their tokens to the SoNami layer 2 blockchain. The token will be available to trade on both Centralized and Decentralized exchanges."
+        },
+        {
+          "title": "03. SoNami Deployment",
+          "description": "SoNami is what Solana has sorely needed. An L2 reducing congestion, downtime, and even increasing speed. It builds upon the beauty of Solana, while making it more scalable with the increase in volume, making it the clear cut solution to take the ecosystem into the future.."
+        }
+      ]
+    }
+  },
+  "howToBuy": {
+    "leftTopBox": {
+      "heading": "SONAMI is fast //",
+      "button": "Launching on major exchanges",
+      "mainnet": "SoNami Mainnet",
+      "stackingReward": "62% staking rewards"
+    },
+    "leftBottomBox": {
+      "1": {
+        "title": "01. Get Wallet",
+        "description": "You’re gonna need a wallet to hold your $SNMI. There are lots of great ones that are compatible! We recommend Best Wallet for simplicity sake.",
+        "download": "Download"
+      },
+      "2": {
+        "title": "02. Add Crypto",
+        "description": "If you're looking to swap crypto for $SNMI, you're going to need some! Use your desired exchange for that, or if paying by card, simply select that option."
+      },
+      "3": {
+        "title": "03. Stacking",
+        "description": "You can choose to stake your tokens during the presale. The APY is substantial and dynamic, meaning the more people stake, it changes!",
+        "stack": "Stack"
+      }
+    },
+    "dialog": {
+      "title": "How to Buy",
+      "step": "Step",
+      "steps": [
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sit amet risus sollicitudin, lobortis justo non, ultricies quam. In sollicitudin vestibulum tellus vitae finibus.",
+        "Vivamus lacinia tempor justo vel fermentum. Vestibulum metus massa, mattis non massa a, blandit dignissim metus. Proin interdum orci ut arcu dapibus, sed dictum elit mollis. Duis nec enim bibendum, cursus tortor eu, egestas elit.",
+        "Cras ullamcorper sapien mauris, sit amet rhoncus dolor sodales non.",
+        "Fusce fringilla massa id orci dictum, eu facilisis augue rutrum. Maecenas id imperdiet massa, et aliquam metus. Donec tempus ante tempor nibh cursus condimentum. Phasellus quis risus quam. Donec ac magna et lectus sagittis accumsan. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. ",
+        "Duis placerat sem dui. Pellentesque sit amet malesuada risus. Duis ut fermentum nulla, a aliquam eros. Cras tincidunt nisi non malesuada consequat. Integer vulputate vel elit vitae finibus. Vivamus placerat sem nisi, ac consequat ante placerat lacinia. Nullam gravida est odio, vel consequat nunc semper vitae."
+      ],
+      "gotIt": "Got it"
+    }
   }
 }

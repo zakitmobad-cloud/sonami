@@ -22,9 +22,11 @@ import {
   Close as CloseIcon,
 } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
-import { useThemeContext } from "../contexts/ThemeContext";
+import { useThemeContext } from "@/contexts/ThemeContext";
+import { useLocation } from "react-router-dom";
 
 const Header = () => {
+  const location = useLocation();
   const matchesSM = useMediaQuery((theme) => theme.breakpoints.down(1150));
   const { mode, toggleTheme } = useThemeContext();
   const { t, i18n } = useTranslation();
@@ -145,8 +147,11 @@ const Header = () => {
             // border: "2px solid #FFFFFF",
             p: "14px 14px 27px 14px",
             minWidth: "100px",
-            color: "primary.main",
-            background: "url(/dev/header-menu-vector.png)",
+            color: location.pathname === page.link ? "#fff" : "primary.main",
+            background:
+              location.pathname === page.link
+                ? "url(/dev/header-menu-vector-active.png)"
+                : "url(/dev/header-menu-vector.png)",
             backgroundSize: "100% 100%",
             backgroundRepeat: "no-repeat",
             //backgroundColor: "rgba(255, 255, 255, 0.5)",
@@ -201,7 +206,7 @@ const Header = () => {
         }}
       >
         {/* {langInput} */}
-        {themeToggleButton}
+        {/* {themeToggleButton} */}
         <IconButton onClick={() => setOpenSidebar(false)}>
           <CloseIcon />
         </IconButton>

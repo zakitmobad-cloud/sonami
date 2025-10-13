@@ -5,6 +5,7 @@ const lightThemeOptions: ThemeOptions = {
     mode: "light",
     primary: {
       main: "#085999",
+      "600": "#128BFE",
       "300": "#A3EAF2",
       light: "#dcf4fc",
       dark: "#303164",

@@ -3,6 +3,9 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 import { I18nextProvider } from "react-i18next";
 import i18n from "./i18n/config";
 import Index from "./pages/Index";
+import Roadmap from "./pages/roadmap";
+import HowToBuy from "./pages/howToBuy";
+
 import NotFound from "./pages/NotFound";
 
 const App = () => (
@@ -11,6 +14,8 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path='/' element={<Index />} />
+          <Route path='/roadmap' element={<Roadmap />} />
+          <Route path='/help' element={<HowToBuy />} />
           <Route path='*' element={<NotFound />} />
         </Routes>
       </BrowserRouter>

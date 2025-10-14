@@ -20,12 +20,12 @@ export default function LeftBottomBox() {
       description: t("utility.leftBottomBox.slider.2.description"),
     },
     {
-      icon: "/dev/star-fish.png",
+      icon: "/dev/animal3.png",
       title: t("utility.leftBottomBox.slider.3.title"),
       description: t("utility.leftBottomBox.slider.3.description"),
     },
     {
-      icon: "/dev/snake-fish.png",
+      icon: "/dev/animal4.png",
       title: t("utility.leftBottomBox.slider.4.title"),
       description: t("utility.leftBottomBox.slider.4.description"),
     },

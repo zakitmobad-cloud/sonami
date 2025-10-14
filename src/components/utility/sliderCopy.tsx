@@ -106,10 +106,13 @@ export default function FeatureSlider({
                     justifyContent: "center",
                     mb: 3,
                     flexShrink: 0,
-                    height: "80px",
+                    maxHeight: "80px",
                   }}
                 >
-                  <img src={item.icon} />
+                  <img
+                    src={item.icon}
+                    style={{ width: "100%", height: "100%" }}
+                  />
                 </Box>
                 <Typography
                   variant='h1'
@@ -153,7 +156,7 @@ export default function FeatureSlider({
         sx={{
           display: "flex",
           alignItems: "center",
-          justifyContent: "center",
+          justifyContent: "space-between",
           gap: 3,
           mt: 4,
         }}
@@ -162,14 +165,6 @@ export default function FeatureSlider({
           onClick={handlePrev}
           disabled={isTransitioning}
           sx={{
-            p: 1.5,
-            bgcolor: "#1976d2",
-            color: "white",
-            clipPath:
-              "polygon(40% 0%, 40% 20%, 100% 20%, 100% 80%, 40% 80%, 40% 100%, 0% 50%)",
-            "&:hover": {
-              bgcolor: "#1565c0",
-            },
             "&:disabled": {
               opacity: 0.5,
               cursor: "not-allowed",
@@ -177,21 +172,62 @@ export default function FeatureSlider({
           }}
           aria-label='Previous slide'
         >
-          <ArrowBackIos />
+          <svg
+            xmlns='http://www.w3.org/2000/svg'
+            width='95'
+            height='76'
+            fill='none'
+            viewBox='0 0 95 76'
+          >
+            <g filter='url(#filter0_g_21_10155)'>
+              <path
+                fill='#4E5D90'
+                d='M37.813 10.01a6.5 6.5 0 0 1 0 9.195c-4.096 4.096-1.195 11.099 4.597 11.099h37.196a7.5 7.5 0 1 1 0 15H42.41c-5.792 0-8.693 7.003-4.597 11.099a6.5 6.5 0 0 1 0 9.194l-.707.707a7.5 7.5 0 0 1-10.607 0L14.901 54.705c-9.334-9.334-9.334-24.468 0-33.803L26.499 9.304a7.5 7.5 0 0 1 10.607 0z'
+              ></path>
+            </g>
+            <defs>
+              <filter
+                id='filter0_g_21_10155'
+                width='93.205'
+                height='75.394'
+                x='0.9'
+                y='0.107'
+                colorInterpolationFilters='sRGB'
+                filterUnits='userSpaceOnUse'
+              >
+                <feFlood floodOpacity='0' result='BackgroundImageFix'></feFlood>
+                <feBlend
+                  in='SourceGraphic'
+                  in2='BackgroundImageFix'
+                  result='shape'
+                ></feBlend>
+                <feTurbulence
+                  baseFrequency='0.43478262424468994 0.43478262424468994'
+                  numOctaves='3'
+                  seed='7290'
+                  type='fractalNoise'
+                ></feTurbulence>
+                <feDisplacementMap
+                  width='100%'
+                  height='100%'
+                  in='shape'
+                  result='displacedImage'
+                  scale='14'
+                  xChannelSelector='R'
+                  yChannelSelector='G'
+                ></feDisplacementMap>
+                <feMerge result='effect1_texture_21_10155'>
+                  <feMergeNode in='displacedImage'></feMergeNode>
+                </feMerge>
+              </filter>
+            </defs>
+          </svg>
         </IconButton>
 
         <IconButton
           onClick={handleNext}
           disabled={isTransitioning}
           sx={{
-            p: 1.5,
-            bgcolor: "#1976d2",
-            color: "white",
-            clipPath:
-              "polygon(60% 0%, 60% 20%, 0% 20%, 0% 80%, 60% 80%, 60% 100%, 100% 50%)",
-            "&:hover": {
-              bgcolor: "#1565c0",
-            },
             "&:disabled": {
               opacity: 0.5,
               cursor: "not-allowed",
@@ -199,7 +235,56 @@ export default function FeatureSlider({
           }}
           aria-label='Next slide'
         >
-          <ArrowForwardIos />
+          <svg
+            xmlns='http://www.w3.org/2000/svg'
+            width='94'
+            height='76'
+            fill='none'
+            viewBox='0 0 94 76'
+          >
+            <g filter='url(#filter0_g_21_10157)'>
+              <path
+                fill='#4E5D90'
+                d='M56.293 10.01a6.5 6.5 0 0 0 0 9.195c4.095 4.096 1.195 11.099-4.598 11.099H14.5a7.5 7.5 0 0 0 0 15h37.196c5.793 0 8.693 7.003 4.598 11.099a6.5 6.5 0 0 0 0 9.194l.706.707a7.5 7.5 0 0 0 10.607 0l11.599-11.599c9.334-9.334 9.334-24.468 0-33.803L67.605 9.304a7.5 7.5 0 0 0-10.607 0z'
+              ></path>
+            </g>
+            <defs>
+              <filter
+                id='filter0_g_21_10157'
+                width='93.205'
+                height='75.394'
+                x='0'
+                y='0.107'
+                colorInterpolationFilters='sRGB'
+                filterUnits='userSpaceOnUse'
+              >
+                <feFlood floodOpacity='0' result='BackgroundImageFix'></feFlood>
+                <feBlend
+                  in='SourceGraphic'
+                  in2='BackgroundImageFix'
+                  result='shape'
+                ></feBlend>
+                <feTurbulence
+                  baseFrequency='0.43478262424468994 0.43478262424468994'
+                  numOctaves='3'
+                  seed='7290'
+                  type='fractalNoise'
+                ></feTurbulence>
+                <feDisplacementMap
+                  width='100%'
+                  height='100%'
+                  in='shape'
+                  result='displacedImage'
+                  scale='14'
+                  xChannelSelector='R'
+                  yChannelSelector='G'
+                ></feDisplacementMap>
+                <feMerge result='effect1_texture_21_10157'>
+                  <feMergeNode in='displacedImage'></feMergeNode>
+                </feMerge>
+              </filter>
+            </defs>
+          </svg>
         </IconButton>
       </Box>
     </Box>

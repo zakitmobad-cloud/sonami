@@ -6,7 +6,6 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import { ArrowBackIos, ArrowForwardIos } from "@mui/icons-material";
 
 interface FeatureItem {
   icon: string;
@@ -61,15 +60,11 @@ export default function FeatureSlider({
   };
 
   return (
-    <Box sx={{ width: "100%", maxWidth: "1200px", mx: "auto", px: 2, py: 4 }}>
+    <Box sx={{ width: "100%", maxWidth: "1200px", mx: "auto", px: 2 }}>
       <Box
         sx={{
           position: "relative",
           overflow: "hidden",
-          background:
-            "linear-gradient(135deg, #e0f7fa 0%, #e3f2fd 50%, #e0f7fa 100%)",
-          borderRadius: "24px",
-          p: 6,
         }}
       >
         <Box
@@ -86,68 +81,72 @@ export default function FeatureSlider({
               placeItems: isMobile ? "center" : "stretch",
             }}
           >
-            {getCurrentItems().map((item, index) => (
-              <Box
-                key={currentIndex * itemsPerSlide + index}
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  textAlign: "center",
-                  height: "320px",
-                  width: "100%",
-                  maxWidth: "448px",
-                }}
-              >
+            {getCurrentItems().map((item, index) => {
+              const singleCard = getCurrentItems().length === 1 || isMobile;
+              return (
                 <Box
+                  key={currentIndex * itemsPerSlide + index}
                   sx={{
                     display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    mb: 3,
-                    flexShrink: 0,
-                    maxHeight: "80px",
+                    flexDirection: "column",
+                    alignItems: singleCard ? "center" : "flex-start",
+                    textAlign: singleCard ? "center" : "left",
+                    minHeight: "270px",
+                    width: "100%",
                   }}
                 >
-                  <img
-                    src={item.icon}
-                    style={{ width: "100%", height: "100%" }}
-                  />
-                </Box>
-                <Typography
-                  variant='h1'
-                  sx={{
-                    mt: "15px",
-                    color: (theme) =>
-                      theme.palette.mode === "dark"
-                        ? "text.primary"
-                        : "primary.main",
-                    fontSize: "19px",
-                    lineHeight: "26px",
-                    fontWeight: 500,
-                    textTransform: "uppercase",
-                    whiteSpace: "break-spaces",
-                  }}
-                >
-                  {item.title}
-                </Typography>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flexShrink: 0,
+                    }}
+                  >
+                    <img
+                      src={item.icon}
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        maxHeight: "80px",
+                      }}
+                    />
+                  </Box>
+                  <Typography
+                    variant='h1'
+                    sx={{
+                      mt: "15px",
+                      color: (theme) =>
+                        theme.palette.mode === "dark"
+                          ? "text.primary"
+                          : "primary.main",
+                      fontSize: "19px",
+                      lineHeight: "26px",
+                      fontWeight: 500,
+                      textTransform: "uppercase",
+                      whiteSpace: "break-spaces",
+                    }}
+                  >
+                    {item.title}
+                  </Typography>
 
-                <Typography
-                  variant='body1'
-                  sx={{
-                    mt: "10px",
-                    fontFamily: "Inter",
-                    color: (theme) =>
-                      theme.palette.mode === "dark" ? "text.primary" : "#000",
-                    fontSize: "17px",
-                    lineHeight: "28px",
-                    fontWeight: 700,
-                  }}
-                >
-                  {item.description}
-                </Typography>
-              </Box>
-            ))}
+                  <Typography
+                    variant='body1'
+                    sx={{
+                      mt: "10px",
+                      fontFamily: "Inter",
+                      color: (theme) =>
+                        theme.palette.mode === "dark" ? "text.primary" : "#000",
+                      fontSize: "17px",
+                      lineHeight: "28px",
+                      fontWeight: 700,
+                    }}
+                  >
+                    {item.description}
+                  </Typography>
+                </Box>
+              );
+            })}
           </Box>
         </Box>
       </Box>
@@ -158,13 +157,14 @@ export default function FeatureSlider({
           alignItems: "center",
           justifyContent: "space-between",
           gap: 3,
-          mt: 4,
+          mt: "10px",
         }}
       >
         <IconButton
           onClick={handlePrev}
           disabled={isTransitioning}
           sx={{
+            background: "transparent !important",
             "&:disabled": {
               opacity: 0.5,
               cursor: "not-allowed",
@@ -228,6 +228,8 @@ export default function FeatureSlider({
           onClick={handleNext}
           disabled={isTransitioning}
           sx={{
+            background: "transparent !important",
+
             "&:disabled": {
               opacity: 0.5,
               cursor: "not-allowed",

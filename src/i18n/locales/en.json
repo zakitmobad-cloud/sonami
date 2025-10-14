@@ -157,5 +157,20 @@
         "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sit amet risus sollicitudin, lobortis justo non, ultricies quam. In sollicitudin vestibulum tellus vitae finibus."
       }
     ]
+  },
+  "chain": {
+    "leftTopBox": {
+      "heading": "Solana Layer 2 has arrived //",
+      "button": "Launching on major exchanges",
+      "mainnet": "SoNami Mainnet",
+      "stackingReward": "62% staking rewards"
+    },
+    "leftBottomBox": {
+      "backToHome": "Back To Home",
+      "back": "back",
+      "whitePaper": "Read Whitepaper",
+      "title": "What is soNAMI?",
+      "description": "SoNami is the next evolution in Layer 2 technology, delivering epic customization, efficiency, and performance. It neutralizes the Solana pain points: network congestion, failed transactions, and scalability limitations, while amplifying the strengths of Solana."
+    }
   }
 }

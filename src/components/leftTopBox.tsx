@@ -19,6 +19,8 @@ export default function LeftTopBox({
   stackingRewardText,
 }) {
   const matchesSM = useMediaQuery((theme) => theme.breakpoints.down(1150));
+  const matches350 = useMediaQuery((theme) => theme.breakpoints.down(350));
+
   const muiTheme = useTheme();
 
   return (
@@ -40,7 +42,7 @@ export default function LeftTopBox({
             : "url(/dev/header-vector.png)",
         backgroundSize: "100% 100%",
         backgroundRepeat: "no-repeat",
-        p: matchesSM ? "0px 15px" : "15px",
+        p: matchesSM ? "0px 10px" : "15px",
         pb: matchesSM ? 0 : "52px",
         //border: matchesSM ? 0 : "2px solid #FFFFFF",
         position: "relative",
@@ -166,7 +168,7 @@ export default function LeftTopBox({
               background: "linear-gradient(180deg, #EF0307 0%, #FB77B7 100%)",
               color: "#fff",
               fontWeight: 500,
-              fontSize: { xs: "13px", sm: "14px" },
+              fontSize: { xs: matches350 ? "10px" : "13px", sm: "14px" },
               width: { xs: "100%", sm: "unset" },
               boxShadow: "none",
               borderRadius: "100px",

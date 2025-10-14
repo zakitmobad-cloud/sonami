@@ -1,5 +1,5 @@
 import { Grid, Typography } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 export default function ActionButton({
   icon,
@@ -10,6 +10,8 @@ export default function ActionButton({
   text: string;
   url: string;
 }) {
+  const location = useLocation();
+
   return (
     <Grid
       container
@@ -23,7 +25,10 @@ export default function ActionButton({
           theme.palette.mode === "dark" ? "text.primary" : "#000",
         //   backgroundColor: (theme) =>
         //     theme.palette.mode === "dark" ? "#292929" : "primary.light",
-        background: "url(/dev/header-menu-vector.png)",
+        background:
+          location.pathname === url
+            ? "url(/dev/header-menu-vector-active.png)"
+            : "url(/dev/header-menu-vector.png)",
         backgroundSize: "100% 100%",
         backgroundRepeat: "no-repeat",
         //backgroundColor: "rgba(255, 255, 255, 0.5)",

@@ -120,6 +120,17 @@
       "gotIt": "Got it"
     }
   },
+  "tokenomics": {
+    "leftTopBox": {
+      "heading": "SONAMI is fast //",
+      "button": "Launching on major exchanges",
+      "mainnet": "SoNami Mainnet",
+      "stackingReward": "62% staking rewards"
+    },
+    "leftBottomBox": {
+      "totalSupply": "Total Supply"
+    }
+  },
   "faqs": {
     "leftTopBox": {
       "heading": "Solana Layer 2 has arrived //",

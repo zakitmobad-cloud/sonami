@@ -5,6 +5,7 @@ import i18n from "./i18n/config";
 import Index from "./pages/Index";
 import Roadmap from "./pages/roadmap";
 import HowToBuy from "./pages/howToBuy";
+import Tokenomics from "./pages/tokenomics";
 import FAQS from "./pages/faqs";
 
 import NotFound from "./pages/NotFound";
@@ -17,6 +18,7 @@ const App = () => (
           <Route path='/' element={<Index />} />
           <Route path='/roadmap' element={<Roadmap />} />
           <Route path='/help' element={<HowToBuy />} />
+          <Route path='/tokenomics' element={<Tokenomics />} />
           <Route path='/faqs' element={<FAQS />} />
 
           <Route path='*' element={<NotFound />} />

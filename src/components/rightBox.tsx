@@ -23,8 +23,8 @@ import { formatAmount } from "@/lib/utils";
 import HowToBuyDialog from "./howToBuyModal";
 
 const servers = [
-  { label: "Ethereum Mainnet", value: "eth", icon: "/dev/ether.png" },
   { label: "Solana Mainnet", value: "sol", icon: "/dev/solana.png" },
+  { label: "USDC Mainnet", value: "usdc", icon: "/dev/usdc.png" },
 ];
 export default function RightBox() {
   const matches350 = useMediaQuery((theme) => theme.breakpoints.down(350));
@@ -120,7 +120,7 @@ export default function RightBox() {
         background: "url(/dev/connect-wallet-vector.png)",
         backgroundSize: "100% 100%",
         backgroundRepeat: "no-repeat",
-        pt: "50.3px",
+        pt: "35.3px",
         pb: "68px",
       }}
     >
@@ -422,7 +422,7 @@ export default function RightBox() {
       {/* hash */}
       <>
         {/* divider */}
-        <Box sx={{ width: "100%", px: px, mt: "30px" }}>
+        <Box sx={{ width: "100%", px: px, mt: "15px" }}>
           <Divider sx={{ borderColor: "#C1A059" }} />
           <Divider sx={{ borderColor: "#FBD88E" }} />
         </Box>
@@ -436,7 +436,7 @@ export default function RightBox() {
             color: (theme) =>
               theme.palette.mode === "dark" ? "text.primary" : "primary.dark",
             overflow: "hidden",
-            py: "19px",
+            py: "15px",
             whiteSpace: "nowrap",
             lineHeight: "23px",
           }}
@@ -454,7 +454,7 @@ export default function RightBox() {
       </>
       {/* input */}
       <>
-        {/* <Box sx={{ width: "100%", px: px, mt: "25px" }}>
+        <Box sx={{ width: "100%", px: px, mt: "20px" }}>
           <TextField
             select
             fullWidth
@@ -471,14 +471,17 @@ export default function RightBox() {
           >
             {servers.map((item, i) => (
               <MenuItem value={item.value} key={i}>
-                <img src={item.icon} style={{ marginRight: "8px",width:"28px",height:"28px" }} />{" "}
+                <img
+                  src={item.icon}
+                  style={{ marginRight: "8px", width: "28px", height: "28px" }}
+                />{" "}
                 {item.label}
               </MenuItem>
             ))}
           </TextField>
-        </Box> */}
+        </Box>
         {/* conversion inputs */}
-        <Box sx={{ width: "100%", px: px, mt: "29px" }}>
+        <Box sx={{ width: "100%", px: px, mt: "20px" }}>
           <Grid container gap='20px'>
             <Grid sx={{ flex: 1 }}>
               <TextField
@@ -741,7 +744,7 @@ export default function RightBox() {
         container
         justifyContent='space-between'
         alignItems='center'
-        sx={{ width: "100%", px: px, mt: "41px" }}
+        sx={{ width: "100%", px: px, mt: "31px" }}
         gap='4px'
       >
         <Grid>

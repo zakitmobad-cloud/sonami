@@ -1,15 +1,4 @@
-import {
-  Box,
-  Chip,
-  Grid,
-  Typography,
-  Divider,
-  useMediaQuery,
-  useTheme,
-  Button,
-  AvatarGroup,
-  Avatar,
-} from "@mui/material";
+import { Grid, Typography, useMediaQuery, useTheme } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import LeftBottomBoxLayout from "../leftBottomBoxLayout";
 import FAQ from "./faq";

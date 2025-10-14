@@ -1,5 +1,5 @@
-import { Box, Typography, useMediaQuery } from "@mui/material";
 import { useState } from "react";
+import { Box, Typography, useMediaQuery } from "@mui/material";
 
 export default function FAQ({
   index,

@@ -4,11 +4,31 @@ import { useTranslation } from "react-i18next";
 import LeftBottomBoxLayout from "../leftBottomBoxLayout";
 export default function LeftBottomBox() {
   const matchesSM = useMediaQuery((theme) => theme.breakpoints.down(1150));
-  const matches450 = useMediaQuery((theme) => theme.breakpoints.down(450));
 
   const { t } = useTranslation();
 
-  const downloadWhitePaper = () => {};
+  const slider = [
+    {
+      icon: "/dev/star-fish.png",
+      title: t("utility.leftBottomBox.slider.1.title"),
+      description: t("utility.leftBottomBox.slider.1.description"),
+    },
+    {
+      icon: "/dev/snake-fish.png",
+      title: t("utility.leftBottomBox.slider.2.title"),
+      description: t("utility.leftBottomBox.slider.2.description"),
+    },
+    {
+      icon: "/dev/star-fish.png",
+      title: t("utility.leftBottomBox.slider.3.title"),
+      description: t("utility.leftBottomBox.slider.3.description"),
+    },
+    {
+      icon: "/dev/snake-fish.png",
+      title: t("utility.leftBottomBox.slider.4.title"),
+      description: t("utility.leftBottomBox.slider.4.description"),
+    },
+  ];
   return (
     <LeftBottomBoxLayout sx={{ px: 0 }}>
       <Box
@@ -76,56 +96,19 @@ export default function LeftBottomBox() {
                     lineHeight: "22px",
                     fontWeight: 500,
                     textTransform: "uppercase",
-                    fontSize: matches450 ? "12px" : "16px",
                   }}
                 >
-                  {matches450
-                    ? t("chain.leftBottomBox.back")
-                    : t("chain.leftBottomBox.backToHome")}
+                  {t("chain.leftBottomBox.backToHome")}
                 </Typography>
               </Grid>
             </Link>
-          </Grid>
-          <Grid>
-            <Typography
-              variant='subtitle1'
-              sx={{
-                background:
-                  "linear-gradient(180deg, #0404AE 0%, #2575DD 48%, #0404AE 100%)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text", // For Firefox (not always needed)
-                color: "transparent",
-                lineHeight: "22px",
-                fontWeight: 500,
-                fontSize: matches450 ? "12px" : "16px",
-                textTransform: "uppercase",
-                pb: "4px",
-                position: "relative",
-                cursor: "pointer",
-              }}
-              onClick={downloadWhitePaper}
-            >
-              <Box
-                sx={{
-                  position: "absolute",
-                  bottom: "-2px",
-                  width: "100%",
-                  height: "1px",
-                  background:
-                    "linear-gradient(180deg, #0404AE 0%, #2575DD 48%, #0404AE 100%)",
-                }}
-              />
-
-              {t("chain.leftBottomBox.whitePaper")}
-            </Typography>
           </Grid>
         </Grid>
 
         <Typography
           variant='h1'
           sx={{
-            mt: "33px",
+            mt: "23px",
             color: (theme) =>
               theme.palette.mode === "dark" ? "text.primary" : "primary.main",
             fontSize: "30px",
@@ -135,42 +118,49 @@ export default function LeftBottomBox() {
             whiteSpace: "break-spaces",
           }}
         >
-          {t("chain.leftBottomBox.title")}
+          {t("utility.leftBottomBox.title")}
         </Typography>
 
-        <Typography
-          variant='body1'
-          sx={{
-            mt: "30px",
-            fontFamily: "Inter",
-            color: (theme) =>
-              theme.palette.mode === "dark" ? "text.primary" : "#000",
-            fontSize: "17px",
-            lineHeight: "28px",
-            fontWeight: 700,
-          }}
-        >
-          {t("chain.leftBottomBox.description")}
-        </Typography>
+        <Grid container justifyContent='space-between' sx={{ mt: "10px" }}>
+          {slider.map((slide, i) => (
+            <Grid key={i} size={{ md: 5, xs: 12 }}>
+              <Grid container direction='column'>
+                <Typography
+                  variant='h1'
+                  sx={{
+                    mt: "15px",
+                    color: (theme) =>
+                      theme.palette.mode === "dark"
+                        ? "text.primary"
+                        : "primary.main",
+                    fontSize: "19px",
+                    lineHeight: "26px",
+                    fontWeight: 500,
+                    textTransform: "uppercase",
+                    whiteSpace: "break-spaces",
+                  }}
+                >
+                  {slide.title}
+                </Typography>
 
-        {!matchesSM && (
-          <Grid
-            sx={{
-              mx: "auto",
-              mt: "33px",
-              mb: { lg: "160px", xs: "30px" },
-              width: "30%",
-            }}
-          >
-            <Divider
-              sx={{
-                borderWidth: "2px",
-                borderColor: (theme) =>
-                  theme.palette.mode === "dark" ? "text.primary" : "#439ED7",
-              }}
-            />
-          </Grid>
-        )}
+                <Typography
+                  variant='body1'
+                  sx={{
+                    mt: "10px",
+                    fontFamily: "Inter",
+                    color: (theme) =>
+                      theme.palette.mode === "dark" ? "text.primary" : "#000",
+                    fontSize: "17px",
+                    lineHeight: "28px",
+                    fontWeight: 700,
+                  }}
+                >
+                  {slide.description}
+                </Typography>
+              </Grid>
+            </Grid>
+          ))}
+        </Grid>
       </Box>
     </LeftBottomBoxLayout>
   );

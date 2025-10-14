@@ -1,11 +1,8 @@
 import {
   Box,
-  Chip,
   Grid,
   Typography,
-  Divider,
   useMediaQuery,
-  useTheme,
   Button,
   AvatarGroup,
   Avatar,
@@ -14,7 +11,6 @@ import LeftBottomBoxLayout from "../leftBottomBoxLayout";
 import { useTranslation } from "react-i18next";
 
 export default function LeftBottomBox() {
-  const muiTheme = useTheme();
   const matchesSM = useMediaQuery((theme) => theme.breakpoints.down(1150));
   const { t } = useTranslation();
 

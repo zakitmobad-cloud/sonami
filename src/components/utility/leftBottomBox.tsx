@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Box, Grid, Typography, Divider, useMediaQuery } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import LeftBottomBoxLayout from "../leftBottomBoxLayout";
+import Slider from "./sliderCopy";
 export default function LeftBottomBox() {
   const matchesSM = useMediaQuery((theme) => theme.breakpoints.down(1150));
 
@@ -47,7 +48,7 @@ export default function LeftBottomBox() {
           alignItems='center'
           sx={{ mt: "36px" }}
         >
-          <Grid sx={{ flex: 1 }}>
+          <Grid>
             <Link to='/' style={{ textDecoration: "none" }}>
               <Grid
                 container
@@ -121,45 +122,8 @@ export default function LeftBottomBox() {
           {t("utility.leftBottomBox.title")}
         </Typography>
 
-        <Grid container justifyContent='space-between' sx={{ mt: "10px" }}>
-          {slider.map((slide, i) => (
-            <Grid key={i} size={{ md: 5, xs: 12 }}>
-              <Grid container direction='column'>
-                <Typography
-                  variant='h1'
-                  sx={{
-                    mt: "15px",
-                    color: (theme) =>
-                      theme.palette.mode === "dark"
-                        ? "text.primary"
-                        : "primary.main",
-                    fontSize: "19px",
-                    lineHeight: "26px",
-                    fontWeight: 500,
-                    textTransform: "uppercase",
-                    whiteSpace: "break-spaces",
-                  }}
-                >
-                  {slide.title}
-                </Typography>
-
-                <Typography
-                  variant='body1'
-                  sx={{
-                    mt: "10px",
-                    fontFamily: "Inter",
-                    color: (theme) =>
-                      theme.palette.mode === "dark" ? "text.primary" : "#000",
-                    fontSize: "17px",
-                    lineHeight: "28px",
-                    fontWeight: 700,
-                  }}
-                >
-                  {slide.description}
-                </Typography>
-              </Grid>
-            </Grid>
-          ))}
+        <Grid container sx={{ mt: "10px" }}>
+          <Slider items={slider} />
         </Grid>
       </Box>
     </LeftBottomBoxLayout>

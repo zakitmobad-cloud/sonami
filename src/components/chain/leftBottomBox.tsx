@@ -8,7 +8,9 @@ export default function LeftBottomBox() {
 
   const { t } = useTranslation();
 
-  const downloadWhitePaper = () => {};
+  const downloadWhitePaper = () => {
+    window.open("/whitepaper.pdf", "_blank");
+  };
   return (
     <LeftBottomBoxLayout sx={{ px: 0 }}>
       <Box

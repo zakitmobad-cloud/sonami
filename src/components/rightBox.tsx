@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import {
   Box,
   Grid,
@@ -13,14 +13,19 @@ import {
   InputAdornment,
   SxProps,
   useMediaQuery,
+  Select,
 } from "@mui/material";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import { Trans, useTranslation } from "react-i18next";
-import { formatAmount } from "@/lib/utils";
+import { formatAmount, formatNumber } from "@/lib/utils";
 import HowToBuyDialog from "./howToBuyModal";
+
+const mainnets = [
+  { label: "Solana Mainnet", value: "sol", icon: "/dev/solana.png" },
+];
 
 const servers = [
   { label: "Solana Mainnet", value: "sol", icon: "/dev/solana.png" },
@@ -32,7 +37,9 @@ export default function RightBox() {
   const { t } = useTranslation();
   const px = { xs: "10px", sm: "20px" };
   const userBalance = 0;
+  const [selectedMainnet, setSelectedMainnet] = useState("sol");
   const [selectedServer, setSelectedServer] = useState("sol");
+  const [openServerInput, setOpenServerInput] = useState(false);
   const [inputAmount, setInputAmount] = useState("");
   const [showBuyInstructionModal, setShowBuyInstructionsModal] =
     useState(false);
@@ -46,7 +53,7 @@ export default function RightBox() {
   const nextPrice = 0.0056;
 
   const solToUSD = 175.49;
-
+  const usdcToUSD = 1;
   const STEP = 0.1;
 
   const handleIncrease = () => {
@@ -459,9 +466,9 @@ export default function RightBox() {
             select
             fullWidth
             variant='outlined'
-            defaultValue={selectedServer}
-            value={selectedServer}
-            onChange={(e) => setSelectedServer(e.target.value)}
+            defaultValue={selectedMainnet}
+            value={selectedMainnet}
+            onChange={(e) => setSelectedMainnet(e.target.value)}
             slotProps={{
               select: {
                 IconComponent: InputCaretIcon,
@@ -469,7 +476,7 @@ export default function RightBox() {
             }}
             sx={inputSx}
           >
-            {servers.map((item, i) => (
+            {mainnets.map((item, i) => (
               <MenuItem value={item.value} key={i}>
                 <img
                   src={item.icon}
@@ -488,45 +495,31 @@ export default function RightBox() {
                 fullWidth
                 type='number'
                 variant='outlined'
-                defaultValue={inputAmount}
                 value={inputAmount}
                 onChange={(e) => {
                   const value = e.target.value;
-                  const numericRegex = /^\d*\.?\d*$/; // allows digits + one optional decimal point
-                  if (numericRegex.test(value)) {
-                    // Allow empty string (so user can delete)
-                    setInputAmount(value);
-                  }
+                  const numericRegex = /^\d*\.?\d*$/;
+                  if (numericRegex.test(value)) setInputAmount(value);
                 }}
                 slotProps={{
                   input: {
-                    inputProps: {
-                      step: STEP, // 👈 increments/decrements by 0.1 when using arrow keys
-                    },
                     endAdornment: (
                       <InputAdornment position='end'>
-                        <Grid
-                          container
-                          wrap='nowrap'
-                          spacing={1}
-                          alignItems='center'
-                        >
-                          {selectedServer &&
-                            servers.find((s) => s.value === selectedServer) && (
-                              <Grid>
-                                <img
-                                  src={
-                                    servers.find(
-                                      (s) => s.value === selectedServer
-                                    ).icon
-                                  }
-                                  style={{ width: "28px", height: "28px" }}
-                                />
-                              </Grid>
-                            )}
-                          <Grid>
+                        <Select
+                          open={openServerInput}
+                          onOpen={() => setOpenServerInput(true)}
+                          onClose={() => setOpenServerInput(false)}
+                          value={selectedServer}
+                          onChange={(e) => setSelectedServer(e.target.value)}
+                          variant='standard'
+                          disableUnderline
+                          id='serverInput'
+                          IconComponent={() => (
                             <Box
+                              component='label'
+                              htmlFor='#serverInput'
                               sx={{ display: "flex", flexDirection: "column" }}
+                              onClick={() => setOpenServerInput((o) => !o)}
                             >
                               <KeyboardArrowUpIcon
                                 fontSize='small'
@@ -534,7 +527,8 @@ export default function RightBox() {
                                   color: muiTheme.palette.text.primary,
                                   cursor: "pointer",
                                 }}
-                                onClick={handleIncrease}
+
+                                //={handleIncrease}
                               />
                               <KeyboardArrowDownIcon
                                 fontSize='small'
@@ -543,11 +537,44 @@ export default function RightBox() {
                                   mt: "-8px",
                                   cursor: "pointer",
                                 }}
-                                onClick={handleDecrease}
+                                // onClick={handleDecrease}
                               />
                             </Box>
-                          </Grid>
-                        </Grid>
+                          )}
+                          sx={{
+                            "& .MuiSelect-select": {
+                              display: "flex",
+                              alignItems: "center",
+                              pr: "4px !important",
+                              p: 0,
+                            },
+                            "& .MuiSvgIcon-root": {
+                              fontSize: 20,
+                            },
+                          }}
+                        >
+                          {servers.map((server) => (
+                            <MenuItem key={server.value} value={server.value}>
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: 1,
+                                }}
+                              >
+                                <img
+                                  src={server.icon}
+                                  alt={server.label}
+                                  style={{
+                                    width: 24,
+                                    height: 24,
+                                    borderRadius: "50%",
+                                  }}
+                                />
+                              </Box>
+                            </MenuItem>
+                          ))}
+                        </Select>
                       </InputAdornment>
                     ),
                   },
@@ -561,7 +588,11 @@ export default function RightBox() {
                 variant='outlined'
                 value={
                   inputAmount && !isNaN(parseFloat(inputAmount))
-                    ? (Number(inputAmount) / solToUSD).toFixed(6)
+                    ? selectedServer === "sol"
+                      ? formatNumber(Number(inputAmount) / solToUSD)
+                      : selectedServer === "usdc"
+                      ? formatNumber(Number(inputAmount) / usdcToUSD)
+                      : ""
                     : ""
                 }
                 slotProps={{
@@ -636,46 +667,54 @@ export default function RightBox() {
               </Grid>
             </Grid>
             <Grid sx={{ flex: 1 }}>
-              <Grid
-                container
-                spacing={1}
-                justifyContent='space-between'
-                alignItems='center'
-              >
-                <Grid>
-                  <Typography
-                    variant='subtitle2'
-                    sx={{
-                      fontFamily: "Inter",
-                      fontWeight: 700,
-                      color: (theme) =>
-                        theme.palette.mode === "dark"
-                          ? "text.primary"
-                          : "primary.dark",
-                      lineHeight: "23px",
-                    }}
-                  >
-                    1 SOL
-                  </Typography>
+              {selectedServer && (
+                <Grid
+                  container
+                  spacing={1}
+                  justifyContent='space-between'
+                  alignItems='center'
+                >
+                  <Grid>
+                    <Typography
+                      variant='subtitle2'
+                      sx={{
+                        fontFamily: "Inter",
+                        fontWeight: 700,
+                        color: (theme) =>
+                          theme.palette.mode === "dark"
+                            ? "text.primary"
+                            : "primary.dark",
+                        lineHeight: "23px",
+                      }}
+                    >
+                      1 {selectedServer.toUpperCase()}
+                    </Typography>
+                  </Grid>
+                  <Grid>
+                    <Typography
+                      variant='subtitle2'
+                      sx={{
+                        fontFamily: "Inter",
+                        fontWeight: 700,
+                        color: (theme) =>
+                          theme.palette.mode === "dark"
+                            ? "text.primary"
+                            : "primary.dark",
+                        lineHeight: "23px",
+                      }}
+                    >
+                      {currency}
+                      {formatAmount(
+                        selectedServer === "sol"
+                          ? solToUSD
+                          : selectedServer === "usdc"
+                          ? usdcToUSD
+                          : 0
+                      )}
+                    </Typography>
+                  </Grid>
                 </Grid>
-                <Grid>
-                  <Typography
-                    variant='subtitle2'
-                    sx={{
-                      fontFamily: "Inter",
-                      fontWeight: 700,
-                      color: (theme) =>
-                        theme.palette.mode === "dark"
-                          ? "text.primary"
-                          : "primary.dark",
-                      lineHeight: "23px",
-                    }}
-                  >
-                    {currency}
-                    {formatAmount(solToUSD)}
-                  </Typography>
-                </Grid>
-              </Grid>
+              )}
             </Grid>
           </Grid>
         </Box>

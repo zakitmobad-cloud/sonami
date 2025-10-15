@@ -36,7 +36,7 @@ export default function RightBox() {
   const muiTheme = useTheme();
   const { t } = useTranslation();
   const px = { xs: "10px", sm: "20px" };
-  const userBalance = 0;
+  const userBalance = 176;
   const [selectedMainnet, setSelectedMainnet] = useState("sol");
   const [selectedServer, setSelectedServer] = useState("sol");
   const [openServerInput, setOpenServerInput] = useState(false);
@@ -661,7 +661,12 @@ export default function RightBox() {
                       lineHeight: "23px",
                     }}
                   >
-                    {userBalance} SOL
+                    {selectedServer === "sol"
+                      ? formatNumber(userBalance / solToUSD)
+                      : selectedServer === "usdc"
+                      ? formatNumber(userBalance / usdcToUSD)
+                      : 0}{" "}
+                    {selectedServer.toUpperCase()}
                   </Typography>
                 </Grid>
               </Grid>

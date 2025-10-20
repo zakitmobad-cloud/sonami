@@ -46,6 +46,9 @@
     "hash": "<highlight>SOL</highlight> 0x6bd...1ffe buys XYZ for <highlight>8 USDT</highlight> 0x9d5...1ffe buys XYZ for <highlight>8 USDT</highlight>",
     "balance": "Balance",
     "connectWallet": "Connect Wallet",
+    "connected": "Wallet connected",
+    "connecting": "Connecting...",
+    "fetching": "Fetching...",
     "dontHaveWallet": "Don't have a wallet?",
     "howToBuy": "How To Buy?"
   },

@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { ThemeProvider } from "./contexts/ThemeContext";
 import { I18nextProvider } from "react-i18next";
+import { ThemeProvider } from "./contexts/ThemeContext";
 import i18n from "./i18n/config";
 import Index from "./pages/Index";
 import Roadmap from "./pages/roadmap";

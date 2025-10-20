@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Grid,
@@ -20,8 +20,16 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import { Trans, useTranslation } from "react-i18next";
+
+import { getAssociatedTokenAddress, getAccount } from "@solana/spl-token";
+import { PublicKey } from "@solana/web3.js";
+import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
+
 import { formatAmount, formatNumber } from "@/lib/utils";
 import HowToBuyDialog from "./howToBuyModal";
+
+const USDC_MINT = new PublicKey("EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"); // mainnet USDC
 
 const mainnets = [
   { label: "Solana Mainnet", value: "sol", icon: "/dev/solana.png" },
@@ -32,13 +40,20 @@ const servers = [
   { label: "USDC Mainnet", value: "usdc", icon: "/dev/usdc.png" },
 ];
 export default function RightBox() {
+  const { connection } = useConnection();
+  const { publicKey, connecting, connected } = useWallet();
   const matches350 = useMediaQuery((theme) => theme.breakpoints.down(350));
   const muiTheme = useTheme();
   const { t } = useTranslation();
   const px = { xs: "10px", sm: "20px" };
-  const userBalance = 176;
+  const [userBalance, setUserBalance] = useState(0);
+  const [loading, setLoading] = useState({
+    active: false,
+    action: "",
+  });
+
   const [selectedMainnet, setSelectedMainnet] = useState("sol");
-  const [selectedServer, setSelectedServer] = useState("sol");
+  const [selectedToken, setSelectedToken] = useState("sol");
   const [openServerInput, setOpenServerInput] = useState(false);
   const [inputAmount, setInputAmount] = useState("");
   const [showBuyInstructionModal, setShowBuyInstructionsModal] =
@@ -55,6 +70,49 @@ export default function RightBox() {
   const solToUSD = 175.49;
   const usdcToUSD = 1;
   const STEP = 0.1;
+  useEffect(() => {
+    const fetchBalance = async () => {
+      if (!publicKey) {
+        setUserBalance(null);
+        return;
+      }
+
+      try {
+        setLoading({
+          active: true,
+          action: "fetchBalance",
+        });
+        if (selectedToken === "sol") {
+          // Get SOL balance
+          const lamports = await connection.getBalance(publicKey);
+          setUserBalance(lamports / 1e9);
+        } else if (selectedToken === "usdc") {
+          // Get USDC balance
+          const tokenAccountAddress = await getAssociatedTokenAddress(
+            USDC_MINT,
+            publicKey
+          );
+
+          const tokenAccount = await getAccount(
+            connection,
+            tokenAccountAddress
+          );
+          const usdcBalance = Number(tokenAccount.amount) / 1_000_000; // USDC has 6 decimals
+          setUserBalance(usdcBalance);
+        }
+      } catch (err) {
+        console.error("Error fetching balance:", err);
+        setUserBalance(0);
+      } finally {
+        setLoading({
+          active: false,
+          action: "",
+        });
+      }
+    };
+
+    fetchBalance();
+  }, [publicKey, selectedToken, connection]);
 
   const handleIncrease = () => {
     setInputAmount((prev) => {
@@ -509,8 +567,11 @@ export default function RightBox() {
                           open={openServerInput}
                           onOpen={() => setOpenServerInput(true)}
                           onClose={() => setOpenServerInput(false)}
-                          value={selectedServer}
-                          onChange={(e) => setSelectedServer(e.target.value)}
+                          value={selectedToken}
+                          onChange={(e) => {
+                            setSelectedToken(e.target.value);
+                            setInputAmount("");
+                          }}
                           variant='standard'
                           disableUnderline
                           id='serverInput'
@@ -588,9 +649,9 @@ export default function RightBox() {
                 variant='outlined'
                 value={
                   inputAmount && !isNaN(parseFloat(inputAmount))
-                    ? selectedServer === "sol"
+                    ? selectedToken === "sol"
                       ? formatNumber(Number(inputAmount) / solToUSD)
-                      : selectedServer === "usdc"
+                      : selectedToken === "usdc"
                       ? formatNumber(Number(inputAmount) / usdcToUSD)
                       : ""
                     : ""
@@ -598,12 +659,12 @@ export default function RightBox() {
                 slotProps={{
                   input: {
                     readOnly: true,
-                    endAdornment: selectedServer &&
-                      servers.find((s) => s.value === selectedServer) && (
+                    endAdornment: selectedToken &&
+                      servers.find((s) => s.value === selectedToken) && (
                         <InputAdornment position='end'>
                           <img
                             src={
-                              servers.find((s) => s.value === selectedServer)
+                              servers.find((s) => s.value === selectedToken)
                                 .icon
                             }
                             style={{
@@ -626,13 +687,8 @@ export default function RightBox() {
           <Grid container gap='20px'>
             {/* balance */}
             <Grid sx={{ flex: 1 }}>
-              <Grid
-                container
-                spacing={1}
-                justifyContent='space-between'
-                alignItems='center'
-              >
-                <Grid>
+              {connected &&
+                (loading.active && loading.action === "fetchBalance" ? (
                   <Typography
                     variant='subtitle2'
                     sx={{
@@ -645,34 +701,52 @@ export default function RightBox() {
                       lineHeight: "23px",
                     }}
                   >
-                    {t("connectWallet.balance")}
+                    {t("connectWallet.fetching")}
                   </Typography>
-                </Grid>
-                <Grid>
-                  <Typography
-                    variant='subtitle2'
-                    sx={{
-                      fontFamily: "Inter",
-                      fontWeight: 700,
-                      color: (theme) =>
-                        theme.palette.mode === "dark"
-                          ? "text.primary"
-                          : "primary.dark",
-                      lineHeight: "23px",
-                    }}
+                ) : (
+                  <Grid
+                    container
+                    spacing={1}
+                    justifyContent='space-between'
+                    alignItems='center'
                   >
-                    {selectedServer === "sol"
-                      ? formatNumber(userBalance / solToUSD)
-                      : selectedServer === "usdc"
-                      ? formatNumber(userBalance / usdcToUSD)
-                      : 0}{" "}
-                    {selectedServer.toUpperCase()}
-                  </Typography>
-                </Grid>
-              </Grid>
+                    <Grid>
+                      <Typography
+                        variant='subtitle2'
+                        sx={{
+                          fontFamily: "Inter",
+                          fontWeight: 700,
+                          color: (theme) =>
+                            theme.palette.mode === "dark"
+                              ? "text.primary"
+                              : "primary.dark",
+                          lineHeight: "23px",
+                        }}
+                      >
+                        {t("connectWallet.balance")}
+                      </Typography>
+                    </Grid>
+                    <Grid>
+                      <Typography
+                        variant='subtitle2'
+                        sx={{
+                          fontFamily: "Inter",
+                          fontWeight: 700,
+                          color: (theme) =>
+                            theme.palette.mode === "dark"
+                              ? "text.primary"
+                              : "primary.dark",
+                          lineHeight: "23px",
+                        }}
+                      >
+                        {userBalance} {selectedToken.toUpperCase()}
+                      </Typography>
+                    </Grid>
+                  </Grid>
+                ))}
             </Grid>
             <Grid sx={{ flex: 1 }}>
-              {selectedServer && (
+              {selectedToken && (
                 <Grid
                   container
                   spacing={1}
@@ -692,7 +766,7 @@ export default function RightBox() {
                         lineHeight: "23px",
                       }}
                     >
-                      1 {selectedServer.toUpperCase()}
+                      1 {selectedToken.toUpperCase()}
                     </Typography>
                   </Grid>
                   <Grid>
@@ -710,9 +784,9 @@ export default function RightBox() {
                     >
                       {currency}
                       {formatAmount(
-                        selectedServer === "sol"
+                        selectedToken === "sol"
                           ? solToUSD
-                          : selectedServer === "usdc"
+                          : selectedToken === "usdc"
                           ? usdcToUSD
                           : 0
                       )}
@@ -759,29 +833,43 @@ export default function RightBox() {
         </Box>
       </>
       {/* connect wallet button */}
-      <Box sx={{ width: "100%", px: px, mt: "30px" }}>
-        <Button
-          variant='contained'
-          color='primary'
-          fullWidth
-          sx={{
+      <Box
+        sx={{
+          width: "100%",
+          px: px,
+          mt: "30px",
+          "& .wallet-adapter-dropdown": {
+            width: "100%",
+          },
+        }}
+      >
+        <WalletMultiButton
+          disabled={connecting}
+          style={{
+            width: "100%",
+            fontFamily: muiTheme.typography.fontFamily,
             background:
               "linear-gradient(180deg, #E9ED00 0%, #ACDD25 48%, #08D745 100%)",
             borderRadius: "4px",
             border: "2px solid #fff",
             fontWeight: 500,
-            px: "19px",
-            py: "16px",
-            color: (theme) =>
-              theme.palette.mode === "dark"
-                ? "background.default"
-                : "primary.dark",
+            padding: "16px 19px",
+            color:
+              muiTheme.palette.mode === "dark"
+                ? muiTheme.palette.background.default
+                : muiTheme.palette.primary.dark,
             fontSize: "16px",
             lineHeight: "23px",
+            display: "flex",
+            justifyContent: "center",
           }}
         >
-          {t("connectWallet.connectWallet")}
-        </Button>
+          {connecting
+            ? t("connectWallet.connecting")
+            : connected
+            ? t("connectWallet.connected")
+            : t("connectWallet.connectWallet")}
+        </WalletMultiButton>
       </Box>
 
       <Grid

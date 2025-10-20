@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   Box,
   Grid,
@@ -6,7 +6,6 @@ import {
   LinearProgress,
   linearProgressClasses,
   Divider,
-  Button,
   TextField,
   MenuItem,
   useTheme,
@@ -21,15 +20,25 @@ import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import { Trans, useTranslation } from "react-i18next";
 
+import * as anchor from "@coral-xyz/anchor";
 import { getAssociatedTokenAddress, getAccount } from "@solana/spl-token";
-import { PublicKey } from "@solana/web3.js";
+import { Connection, PublicKey } from "@solana/web3.js";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
-import { useConnection, useWallet } from "@solana/wallet-adapter-react";
+import {
+  useAnchorWallet,
+  useConnection,
+  useWallet,
+} from "@solana/wallet-adapter-react";
 
 import { formatAmount, formatNumber } from "@/lib/utils";
 import HowToBuyDialog from "./howToBuyModal";
 
-const USDC_MINT = new PublicKey("EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"); // mainnet USDC
+const NETWORK = import.meta.env.VITE_NETWORK;
+const PROGRAM_ID = new PublicKey(import.meta.env.VITE_PROGRAM_ID);
+const PRESALE_STATE = new PublicKey(import.meta.env.VITE_PRESALE_STATE);
+const USDC_MINT = new PublicKey(import.meta.env.VITE_USDC_MINT);
+const TREASURY_USDC = new PublicKey(import.meta.env.VITE_TREASURY_USDC);
+const TREASURY_SOL = new PublicKey(import.meta.env.VITE_TREASURY_SOL);
 
 const mainnets = [
   { label: "Solana Mainnet", value: "sol", icon: "/dev/solana.png" },
@@ -42,6 +51,8 @@ const servers = [
 export default function RightBox() {
   const { connection } = useConnection();
   const { publicKey, connecting, connected } = useWallet();
+  const wallet = useAnchorWallet();
+
   const matches350 = useMediaQuery((theme) => theme.breakpoints.down(350));
   const muiTheme = useTheme();
   const { t } = useTranslation();
@@ -70,6 +81,7 @@ export default function RightBox() {
   const solToUSD = 175.49;
   const usdcToUSD = 1;
   const STEP = 0.1;
+
   useEffect(() => {
     const fetchBalance = async () => {
       if (!publicKey) {
@@ -128,6 +140,109 @@ export default function RightBox() {
       return newValue === 0 ? "0" : newValue.toFixed(1);
     });
   };
+
+  async function buyWithUsdc(usdcAmount: number) {
+    try {
+      // Connect wallet
+      const provider = new anchor.AnchorProvider(connection, wallet, {
+        preflightCommitment: "confirmed",
+      });
+      anchor.setProvider(provider);
+
+      // Load your program IDL (if you have presale.json from build)
+      const idl = await anchor.Program.fetchIdl(PROGRAM_ID, provider);
+      const program = new anchor.Program(idl, provider);
+
+      const buyer = publicKey;
+      console.log("Buyer wallet:", buyer.toBase58());
+
+      // Derive buyer's USDC ATA
+      const buyerUsdc = await getAssociatedTokenAddress(USDC_MINT, buyer);
+
+      // Derive buyer state PDA
+      const [buyerState] = PublicKey.findProgramAddressSync(
+        [Buffer.from("buyer"), PRESALE_STATE.toBuffer(), buyer.toBuffer()],
+        PROGRAM_ID
+      );
+
+      console.log("Buyer USDC:", buyerUsdc.toBase58());
+      console.log("Buyer state:", buyerState.toBase58());
+
+      // Convert amount (e.g. 5 USDC = 5_000_000)
+      const amount = new anchor.BN(usdcAmount * 1_000_000);
+
+      const txSig = await program.methods
+        .buyWithUsdc(amount)
+        .accounts({
+          buyer,
+          presaleState: PRESALE_STATE,
+          usdcMint: USDC_MINT,
+          buyerUsdc,
+          treasuryUsdc: TREASURY_USDC,
+          buyerState,
+          tokenProgram: anchor.utils.token.TOKEN_PROGRAM_ID,
+          systemProgram: anchor.web3.SystemProgram.programId,
+        })
+        .rpc();
+
+      alert(`✅ Purchase successful!\nTx: ${txSig}`);
+      console.log("✅ Bought with USDC, tx:", txSig);
+    } catch (err) {
+      console.error("❌ Transaction failed:", err);
+      alert("Transaction failed: " + err.message);
+    }
+  }
+
+  async function buyWithSol(solAmount: number) {
+    console.log("🧾 Using wallet:", publicKey.toBase58());
+
+    // Connect wallet
+    const provider = new anchor.AnchorProvider(connection, wallet, {
+      preflightCommitment: "confirmed",
+    });
+    anchor.setProvider(provider);
+
+    // Load your program IDL (if you have presale.json from build)
+    const idl = await anchor.Program.fetchIdl(PROGRAM_ID, provider);
+    const program = new anchor.Program(idl, {
+      connection,
+    });
+
+    // Presale PDA (from your initialize log)
+    const presaleState = PRESALE_STATE;
+
+    // The treasury SOL account you used in initialize_presale
+    const treasurySol = new anchor.web3.PublicKey(
+      TREASURY_SOL // 👈 replace with your admin wallet or treasury SOL address
+    );
+
+    // Derive buyer state PDA (it will be created if not exists)
+    const [buyerState] = anchor.web3.PublicKey.findProgramAddressSync(
+      [Buffer.from("buyer"), presaleState.toBuffer(), publicKey.toBuffer()],
+      program.programId
+    );
+
+    // Amount to pay (in lamports)
+    const lamports = new anchor.BN(solAmount); // 0.001 SOL
+
+    console.log("🚀 Buying with SOL...");
+    const tx = await program.methods
+      .buyWithSol(lamports)
+      .accounts({
+        buyer: publicKey,
+        presaleState,
+        treasurySol,
+        buyerState,
+        systemProgram: anchor.web3.SystemProgram.programId,
+      })
+      .rpc();
+
+    console.log("✅ Success! Tx:", tx);
+    console.log(
+      `View on Explorer: https://explorer.solana.com/tx/${tx}?cluster=devnet`
+    );
+    alert("✅ Success! ");
+  }
 
   const InputCaretIcon = () => (
     <svg
@@ -880,19 +995,28 @@ export default function RightBox() {
         gap='4px'
       >
         <Grid>
-          {/* <Typography
-            variant='subtitle2'
-            sx={{
-              fontSize: "10px",
-              fontWeight: 500,
-              textDecoration: "underline",
-              textTransform: "uppercase",
-              color: "text.primary",
-              cursor: "pointer",
-            }}
-          >
-            {t("connectWallet.dontHaveWallet")}
-          </Typography> */}
+          {connected && (
+            <Typography
+              variant='subtitle2'
+              sx={{
+                fontSize: "10px",
+                fontWeight: 500,
+                textDecoration: "underline",
+                textTransform: "uppercase",
+                color: "text.primary",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                if (selectedToken && inputAmount) {
+                  if (selectedToken === "sol") buyWithSol(Number(inputAmount));
+                  else if (selectedToken === "usdc")
+                    buyWithUsdc(Number(inputAmount));
+                }
+              }}
+            >
+              {t("header.buy")}
+            </Typography>
+          )}
         </Grid>
         <Grid>
           <Typography

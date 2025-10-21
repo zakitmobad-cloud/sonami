@@ -21,15 +21,18 @@ import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import { Trans, useTranslation } from "react-i18next";
 
 import * as anchor from "@coral-xyz/anchor";
-import { getAssociatedTokenAddress, getAccount } from "@solana/spl-token";
-import { Connection, PublicKey } from "@solana/web3.js";
-import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
-import {
-  useAnchorWallet,
-  useConnection,
-  useWallet,
-} from "@solana/wallet-adapter-react";
 
+import { getAssociatedTokenAddress, getAccount } from "@solana/spl-token";
+import {
+  Connection,
+  PublicKey,
+  SystemProgram,
+  clusterApiUrl,
+} from "@solana/web3.js";
+import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
+
+import idl from "@/lib/idl.json";
 import { formatAmount, formatNumber } from "@/lib/utils";
 import HowToBuyDialog from "./howToBuyModal";
 
@@ -48,10 +51,11 @@ const servers = [
   { label: "Solana Mainnet", value: "sol", icon: "/dev/solana.png" },
   { label: "USDC Mainnet", value: "usdc", icon: "/dev/usdc.png" },
 ];
+//const connection = new Connection(NETWORK);
 export default function RightBox() {
   const { connection } = useConnection();
-  const { publicKey, connecting, connected } = useWallet();
-  const wallet = useAnchorWallet();
+  const { publicKey, connecting, connected, signTransaction } = useWallet();
+  const wallet = useWallet();
 
   const matches350 = useMediaQuery((theme) => theme.breakpoints.down(350));
   const muiTheme = useTheme();
@@ -194,54 +198,79 @@ export default function RightBox() {
   }
 
   async function buyWithSol(solAmount: number) {
-    console.log("🧾 Using wallet:", publicKey.toBase58());
+    try {
+      console.log("🧾 Using wallet:", publicKey.toBase58());
+      if (!publicKey || !signTransaction) {
+        throw new Error("Wallet not connected");
+      }
 
-    // Connect wallet
-    const provider = new anchor.AnchorProvider(connection, wallet, {
-      preflightCommitment: "confirmed",
-    });
-    anchor.setProvider(provider);
+      const provider = new anchor.AnchorProvider(connection, wallet, {
+        preflightCommitment: "processed",
+      });
+      anchor.setProvider(provider);
 
-    // Load your program IDL (if you have presale.json from build)
-    const idl = await anchor.Program.fetchIdl(PROGRAM_ID, provider);
-    const program = new anchor.Program(idl, {
-      connection,
-    });
+      console.log("provider set");
+      // Load your program IDL (if you have presale.json from build)
+      //const idl = await anchor.Program.fetchIdl(PROGRAM_ID, provider);
+      const program = new anchor.Program(idl, provider);
 
-    // Presale PDA (from your initialize log)
-    const presaleState = PRESALE_STATE;
+      console.log("program", program);
+      // Presale PDA (from your initialize log)
+      const presaleState = PRESALE_STATE;
+      // The treasury SOL account you used in initialize_presale
+      const treasurySol = TREASURY_SOL;
 
-    // The treasury SOL account you used in initialize_presale
-    const treasurySol = new anchor.web3.PublicKey(
-      TREASURY_SOL // 👈 replace with your admin wallet or treasury SOL address
-    );
+      // Derive buyer state PDA
+      // const [buyerState] = PublicKey.findProgramAddressSync(
+      //   [
+      //     Buffer.from("buyer"),
+      //     presaleState.toBuffer(),
+      //     wallet.publicKey.toBuffer(),
+      //   ],
+      //   program.programId
+      // );
 
-    // Derive buyer state PDA (it will be created if not exists)
-    const [buyerState] = anchor.web3.PublicKey.findProgramAddressSync(
-      [Buffer.from("buyer"), presaleState.toBuffer(), publicKey.toBuffer()],
-      program.programId
-    );
+      // Derive buyer state PDA (it will be created if not exists)
+      const [buyerState] = anchor.web3.PublicKey.findProgramAddressSync(
+        [Buffer.from("buyer"), presaleState.toBuffer(), publicKey.toBuffer()],
+        program.programId
+      );
 
-    // Amount to pay (in lamports)
-    const lamports = new anchor.BN(solAmount); // 0.001 SOL
+      console.log("buyerstate");
 
-    console.log("🚀 Buying with SOL...");
-    const tx = await program.methods
-      .buyWithSol(lamports)
-      .accounts({
+      // Amount to pay (in lamports)
+      //const lamports = new anchor.BN(0.001 * anchor.web3.LAMPORTS_PER_SOL); // 0.001 SOL
+
+      const lamports = new anchor.BN(1_000_000); // 0.001 SOL
+
+      console.log("🚀 Buying with SOL...", {
         buyer: publicKey,
         presaleState,
         treasurySol,
         buyerState,
-        systemProgram: anchor.web3.SystemProgram.programId,
-      })
-      .rpc();
+        systemProgram: SystemProgram.programId,
+      });
+      console.log(lamports);
+      const tx = await program.methods
+        .buyWithSol(lamports)
+        .accounts({
+          buyer: publicKey,
+          presaleState: presaleState,
+          treasurySol: treasurySol,
+          buyerState: buyerState,
+          systemProgram: SystemProgram.programId,
+        })
+        .rpc();
 
-    console.log("✅ Success! Tx:", tx);
-    console.log(
-      `View on Explorer: https://explorer.solana.com/tx/${tx}?cluster=devnet`
-    );
-    alert("✅ Success! ");
+      console.log("✅ Success! Tx:", tx);
+      console.log(
+        `View on Explorer: https://explorer.solana.com/tx/${tx}?cluster=devnet`
+      );
+      alert("✅ Success! ");
+    } catch (err: any) {
+      console.log(err);
+      // alert(err.message);
+    }
   }
 
   const InputCaretIcon = () => (

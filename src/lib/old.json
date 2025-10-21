@@ -1,0 +1,183 @@
+{
+  "version": "0.1.0",
+  "name": "presale",
+  "address": "Foby5vBc2mRFaGuzBqRHUn7QRdt7dhnwxvmhBwGD4eYc",
+  "instructions": [
+    {
+      "name": "initializePresale",
+      "accounts": [
+        { "name": "admin", "writable": true, "signer": true },
+        { "name": "presaleState", "writable": true, "signer": false },
+        { "name": "mintAuth", "writable": false, "signer": false },
+        { "name": "tokenMint", "writable": true, "signer": false },
+        { "name": "treasurySol", "writable": true, "signer": false },
+        { "name": "usdcMint", "writable": false, "signer": false },
+        { "name": "treasuryUsdc", "writable": true, "signer": false },
+        { "name": "systemProgram", "writable": false, "signer": false },
+        { "name": "tokenProgram", "writable": false, "signer": false },
+        { "name": "associatedTokenProgram", "writable": false, "signer": false }
+      ],
+      "args": [
+        { "name": "solPriceLamportsPerToken", "type": "u64" },
+        { "name": "usdcPriceUnitsPerToken", "type": "u64" },
+        { "name": "startTs", "type": "i64" },
+        { "name": "endTs", "type": "i64" },
+        { "name": "hardCapTokens", "type": "u64" },
+        { "name": "maxPerWalletTokens", "type": "u64" }
+      ]
+    },
+    {
+      "name": "setClaimStart",
+      "accounts": [
+        { "name": "admin", "writable": true, "signer": true },
+        { "name": "presaleState", "writable": true, "signer": false }
+      ],
+      "args": [{ "name": "claimStartTs", "type": "i64" }]
+    },
+    {
+      "name": "buyWithSol",
+      "accounts": [
+        { "name": "buyer", "writable": true, "signer": true },
+        { "name": "presaleState", "writable": true, "signer": false },
+        { "name": "treasurySol", "writable": true, "signer": false },
+        { "name": "buyerState", "writable": true, "signer": false },
+        { "name": "systemProgram", "writable": false, "signer": false }
+      ],
+      "args": [{ "name": "lamports", "type": "u64" }]
+    },
+    {
+      "name": "buyWithUsdc",
+      "accounts": [
+        { "name": "buyer", "writable": true, "signer": true },
+        { "name": "presaleState", "writable": true, "signer": false },
+        { "name": "usdcMint", "writable": false, "signer": false },
+        { "name": "buyerUsdc", "writable": true, "signer": false },
+        { "name": "treasuryUsdc", "writable": true, "signer": false },
+        { "name": "buyerState", "writable": true, "signer": false },
+        { "name": "tokenProgram", "writable": false, "signer": false },
+        { "name": "systemProgram", "writable": false, "signer": false }
+      ],
+      "args": [{ "name": "usdcAmount", "type": "u64" }]
+    },
+    {
+      "name": "claimAll",
+      "accounts": [
+        { "name": "buyer", "writable": true, "signer": true },
+        { "name": "presaleState", "writable": true, "signer": false },
+        { "name": "mintAuth", "writable": false, "signer": false },
+        { "name": "tokenMint", "writable": true, "signer": false },
+        { "name": "buyerTokenAccount", "writable": true, "signer": false },
+        { "name": "buyerState", "writable": true, "signer": false },
+        { "name": "tokenProgram", "writable": false, "signer": false },
+        {
+          "name": "associatedTokenProgram",
+          "writable": false,
+          "signer": false
+        },
+        { "name": "systemProgram", "writable": false, "signer": false }
+      ],
+      "args": []
+    }
+  ],
+  "types": [
+    {
+      "name": "PresaleState",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "admin", "type": "publicKey" },
+          { "name": "tokenMint", "type": "publicKey" },
+          { "name": "usdcMint", "type": "publicKey" },
+          { "name": "treasurySol", "type": "publicKey" },
+          { "name": "treasuryUsdc", "type": "publicKey" },
+          { "name": "solPrice", "type": "u64" },
+          { "name": "usdcPrice", "type": "u64" },
+          { "name": "startTs", "type": "i64" },
+          { "name": "endTs", "type": "i64" },
+          { "name": "hardCapTokens", "type": "u64" },
+          { "name": "allocatedTokens", "type": "u64" },
+          { "name": "maxPerWallet", "type": "u64" },
+          { "name": "uniqueBuyers", "type": "u64" },
+          { "name": "claimStartTs", "type": "i64" },
+          { "name": "tokenDecimals", "type": "u8" },
+          { "name": "bumpState", "type": "u8" },
+          { "name": "bumpMintAuth", "type": "u8" }
+        ]
+      }
+    },
+    {
+      "name": "BuyerState",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "buys", "type": "u64" },
+          { "name": "allocatedTokens", "type": "u64" },
+          { "name": "claimedTokens", "type": "u64" },
+          { "name": "spentLamports", "type": "u64" },
+          { "name": "spentUsdc", "type": "u64" },
+          { "name": "lastBuyTs", "type": "i64" }
+        ]
+      }
+    },
+    {
+      "name": "buyWithSol",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "buyer", "type": "publicKey" },
+          { "name": "presaleState", "type": "publicKey" },
+          { "name": "treasurySol", "type": "publicKey" },
+          { "name": "buyerState", "type": "publicKey" },
+          { "name": "systemProgram", "type": "publicKey" }
+        ]
+      }
+    }
+  ],
+
+  "errors": [
+    { "code": 6000, "name": "SaleNotStarted", "msg": "Sale has not started." },
+    { "code": 6001, "name": "SaleEnded", "msg": "Sale has ended." },
+    { "code": 6002, "name": "InvalidWindow", "msg": "Invalid sale window." },
+    { "code": 6003, "name": "InvalidPrice", "msg": "Invalid price." },
+    { "code": 6004, "name": "MathOverflow", "msg": "Math overflow." },
+    { "code": 6005, "name": "HardCapExceeded", "msg": "Hard cap exceeded." },
+    {
+      "code": 6006,
+      "name": "PerWalletLimitExceeded",
+      "msg": "Per-wallet limit exceeded."
+    },
+    {
+      "code": 6007,
+      "name": "MintAuthorityMustBeAdmin",
+      "msg": "Token mint authority must be the admin to initialize."
+    },
+    {
+      "code": 6008,
+      "name": "WrongMintForTreasury",
+      "msg": "Treasury USDC account has wrong mint."
+    },
+    {
+      "code": 6009,
+      "name": "WrongBuyerUsdcMint",
+      "msg": "Buyer USDC account has wrong mint."
+    },
+    {
+      "code": 6010,
+      "name": "UsdcNotOwnedByBuyer",
+      "msg": "Buyer does not own the USDC account."
+    },
+    { "code": 6011, "name": "ClaimsDisabled", "msg": "Claims are disabled." },
+    {
+      "code": 6012,
+      "name": "ClaimsNotStarted",
+      "msg": "Claims not started yet."
+    },
+    {
+      "code": 6013,
+      "name": "InvalidClaimStart",
+      "msg": "Invalid claim start timestamp."
+    },
+    { "code": 6014, "name": "NotAdmin", "msg": "Not admin." },
+    { "code": 6015, "name": "NothingToClaim", "msg": "Nothing to claim." }
+  ]
+}

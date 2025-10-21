@@ -1,0 +1,87 @@
+{
+  "address": "Foby5vBc2mRFaGuzBqRHUn7QRdt7dhnwxvmhBwGD4eYc",
+  "metadata": {},
+  "name": "presale",
+  "version": "0.1.0",
+  "instructions": [
+    {
+      "name": "initializePresale",
+      "accounts": [
+        { "name": "admin", "writable": true, "signer": true },
+        { "name": "presaleState", "writable": true, "signer": false },
+        { "name": "mintAuth", "writable": false, "signer": false },
+        { "name": "tokenMint", "writable": true, "signer": false },
+        { "name": "treasurySol", "writable": true, "signer": false },
+        { "name": "usdcMint", "writable": false, "signer": false },
+        { "name": "treasuryUsdc", "writable": true, "signer": false },
+        { "name": "systemProgram", "writable": false, "signer": false },
+        { "name": "tokenProgram", "writable": false, "signer": false },
+        { "name": "associatedTokenProgram", "writable": false, "signer": false }
+      ],
+      "args": [
+        { "name": "solPriceLamportsPerToken", "type": "u64" },
+        { "name": "usdcPriceUnitsPerToken", "type": "u64" },
+        { "name": "startTs", "type": "i64" },
+        { "name": "endTs", "type": "i64" },
+        { "name": "hardCapTokens", "type": "u64" },
+        { "name": "maxPerWalletTokens", "type": "u64" }
+      ]
+    },
+    {
+      "name": "setClaimStart",
+      "accounts": [
+        { "name": "admin", "writable": true, "signer": true },
+        { "name": "presaleState", "writable": true, "signer": false }
+      ],
+      "args": [{ "name": "claimStartTs", "type": "i64" }]
+    },
+    {
+      "name": "buyWithSol",
+      "accounts": [
+        {
+          "name": "buyer",
+          "writable": true,
+          "signer": true
+        },
+        { "name": "presaleState", "writable": true, "signer": false },
+        { "name": "treasurySol", "writable": true, "signer": false },
+        { "name": "buyerState", "writable": true, "signer": false },
+        { "name": "systemProgram", "writable": false, "signer": false }
+      ],
+      "args": [{ "name": "lamports", "type": "u64" }]
+    },
+    {
+      "name": "buyWithUsdc",
+      "accounts": [
+        { "name": "buyer", "writable": true, "signer": true },
+        { "name": "presaleState", "writable": true, "signer": false },
+        { "name": "usdcMint", "writable": false, "signer": false },
+        { "name": "buyerUsdc", "writable": true, "signer": false },
+        { "name": "treasuryUsdc", "writable": true, "signer": false },
+        { "name": "buyerState", "writable": true, "signer": false },
+        { "name": "tokenProgram", "writable": false, "signer": false },
+        { "name": "systemProgram", "writable": false, "signer": false }
+      ],
+      "args": [{ "name": "usdcAmount", "type": "u64" }]
+    },
+    {
+      "name": "claimAll",
+      "accounts": [
+        { "name": "buyer", "writable": true, "signer": true },
+        { "name": "presaleState", "writable": true, "signer": false },
+        { "name": "mintAuth", "writable": false, "signer": false },
+        { "name": "tokenMint", "writable": true, "signer": false },
+        { "name": "buyerTokenAccount", "writable": true, "signer": false },
+        { "name": "buyerState", "writable": true, "signer": false },
+        { "name": "tokenProgram", "writable": false, "signer": false },
+        {
+          "name": "associatedTokenProgram",
+          "writable": false,
+          "signer": false
+        },
+        { "name": "systemProgram", "writable": false, "signer": false }
+      ],
+      "args": []
+    }
+  ]
+}

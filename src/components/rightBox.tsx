@@ -206,7 +206,6 @@ export default function RightBox() {
       alert("Transaction failed: " + err.message);
     }
   }
-
   async function buyWithSol(solAmount: number) {
     try {
       if (!publicKey || !signTransaction) {
@@ -230,15 +229,21 @@ export default function RightBox() {
         lamports.toArrayLike(Buffer, "le", 8),
       ]);
 
-      console.log("Using EXACT account setup from working transaction:");
+      console.log("Buying:", {
+        solAmount: solAmount,
+        lamports: lamports.toString(),
+        buyer: publicKey.toString(),
+        treasury: TREASURY_SOL.toString(), // Add this
+        buyerState: buyerState.toString(),
+      });
 
-      // EXACT account order from working Playground transaction
+      // CORRECT account order - use treasury for Account #3
       const instruction = new anchor.web3.TransactionInstruction({
         keys: [
-          { pubkey: publicKey, isSigner: true, isWritable: true }, // Account #1: buyer (WritableSigner)
-          { pubkey: PRESALE_STATE, isSigner: false, isWritable: true }, // Account #2: presale_state (Writable)
-          { pubkey: publicKey, isSigner: true, isWritable: true }, // Account #3: ??? (WritableSigner) - This seems wrong!
-          { pubkey: buyerState, isSigner: false, isWritable: true }, // Account #4: buyer_state (Writable)
+          { pubkey: publicKey, isSigner: true, isWritable: true }, // Account #1: buyer
+          { pubkey: PRESALE_STATE, isSigner: false, isWritable: true }, // Account #2: presale_state
+          { pubkey: TREASURY_SOL, isSigner: false, isWritable: true }, // Account #3: treasury_sol (FIXED!)
+          { pubkey: buyerState, isSigner: false, isWritable: true }, // Account #4: buyer_state
           {
             pubkey: anchor.web3.SystemProgram.programId,
             isSigner: false,
@@ -255,15 +260,29 @@ export default function RightBox() {
         await connection.getLatestBlockhash()
       ).blockhash;
 
-      console.log("Sending transaction with EXACT Playground account order...");
+      console.log("Sending transaction...");
       const signed = await signTransaction(transaction);
       const signature = await connection.sendRawTransaction(signed.serialize());
 
       await connection.confirmTransaction(signature);
-      ///setStageRaised(n); //where n is any number
-      setStageRaised((s) => s + 1);
 
       console.log("✅ SUCCESS! Transaction:", signature);
+
+      // Check balances after transaction
+      const buyerBalanceAfter = await connection.getBalance(publicKey);
+      const treasuryBalanceAfter = await connection.getBalance(TREASURY_SOL);
+      console.log(
+        "Buyer balance after:",
+        buyerBalanceAfter / anchor.web3.LAMPORTS_PER_SOL,
+        "SOL"
+      );
+      console.log(
+        "Treasury balance after:",
+        treasuryBalanceAfter / anchor.web3.LAMPORTS_PER_SOL,
+        "SOL"
+      );
+      setStageRaised((s) => s + 1);
+      setUserBalance((u) => u - Number(inputAmount));
     } catch (err: any) {
       console.log("Error:", err);
       if (err.logs) {
@@ -271,6 +290,7 @@ export default function RightBox() {
       }
     }
   }
+
   const InputCaretIcon = () => (
     <svg
       xmlns='http://www.w3.org/2000/svg'

@@ -157,6 +157,10 @@ export default function RightBox() {
 
   async function buyWithUsdc(usdcAmount: number) {
     try {
+      if (Number(usdcAmount) > userBalance) {
+        alert("Insufficient balance");
+        return;
+      }
       // Connect wallet
       const provider = new anchor.AnchorProvider(connection, wallet, {
         preflightCommitment: "confirmed",
@@ -211,7 +215,7 @@ export default function RightBox() {
       if (!publicKey || !signTransaction) {
         throw new Error("Wallet not connected");
       }
-      if (Number(inputAmount) > userBalance) {
+      if (Number(solAmount) > userBalance) {
         alert("Insufficient balance");
         return;
       }

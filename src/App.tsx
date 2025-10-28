@@ -9,6 +9,7 @@ import Tokenomics from "./pages/tokenomics";
 import FAQS from "./pages/faqs";
 import Chain from "./pages/chain";
 import Utility from "./pages/utility";
+import DevUpdates from "./pages/devUpdates";
 
 import NotFound from "./pages/NotFound";
 
@@ -24,6 +25,7 @@ const App = () => (
           <Route path='/faqs' element={<FAQS />} />
           <Route path='/chain' element={<Chain />} />
           <Route path='/utility' element={<Utility />} />
+          <Route path='/dev-updates' element={<DevUpdates />} />
 
           <Route path='*' element={<NotFound />} />
         </Routes>

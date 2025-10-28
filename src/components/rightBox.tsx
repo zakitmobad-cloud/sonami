@@ -13,6 +13,7 @@ import {
   SxProps,
   useMediaQuery,
   Select,
+  Button,
 } from "@mui/material";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
@@ -51,6 +52,7 @@ const servers = [
   { label: "Solana Mainnet", value: "sol", icon: "/dev/solana.png" },
   { label: "USDC Mainnet", value: "usdc", icon: "/dev/usdc.png" },
 ];
+
 //const connection = new Connection(NETWORK);
 export default function RightBox() {
   const { connection } = useConnection();
@@ -74,16 +76,16 @@ export default function RightBox() {
   const [showBuyInstructionModal, setShowBuyInstructionsModal] =
     useState(false);
   const currency = "$";
-  const stageRaised = formatAmount(15427953);
-  const totalRaised = formatAmount(15500000);
+  const [stageRaised, setStageRaised] = useState(2320867);
+  const totalRaised = 15500000;
   const listingPrice = 0.1;
   const stageNumber = 17;
-  const targetRaisedInPercent = 28;
+  const [targetRaisedInPercent] = useState(28);
   const currentPrice = 0.0055;
   const nextPrice = 0.0056;
 
-  const solToUSD = 175.49;
-  const usdcToUSD = 1;
+  const snmiToSol = 0.0001;
+  const snmiToUsdc = 0.002;
   const STEP = 0.1;
 
   useEffect(() => {
@@ -145,6 +147,14 @@ export default function RightBox() {
     });
   };
 
+  function calculateSnmi(amount: number, token: "sol" | "usdc") {
+    if (token === "sol") {
+      return amount / snmiToSol; // SNMI = amountInSOL / 0.0001
+    } else {
+      return amount / snmiToUsdc; // SNMI = amountInUSDC / 0.002
+    }
+  }
+
   async function buyWithUsdc(usdcAmount: number) {
     try {
       // Connect wallet
@@ -199,80 +209,68 @@ export default function RightBox() {
 
   async function buyWithSol(solAmount: number) {
     try {
-      console.log("🧾 Using wallet:", publicKey.toBase58());
       if (!publicKey || !signTransaction) {
         throw new Error("Wallet not connected");
       }
 
-      const provider = new anchor.AnchorProvider(connection, wallet, {
-        preflightCommitment: "processed",
-      });
-      anchor.setProvider(provider);
+      const lamports = new anchor.BN(solAmount * anchor.web3.LAMPORTS_PER_SOL);
 
-      console.log("provider set");
-      // Load your program IDL (if you have presale.json from build)
-      //const idl = await anchor.Program.fetchIdl(PROGRAM_ID, provider);
-      const program = new anchor.Program(idl, provider);
-
-      console.log("program", program);
-      // Presale PDA (from your initialize log)
-      const presaleState = PRESALE_STATE;
-      // The treasury SOL account you used in initialize_presale
-      const treasurySol = TREASURY_SOL;
-
-      // Derive buyer state PDA
-      // const [buyerState] = PublicKey.findProgramAddressSync(
-      //   [
-      //     Buffer.from("buyer"),
-      //     presaleState.toBuffer(),
-      //     wallet.publicKey.toBuffer(),
-      //   ],
-      //   program.programId
-      // );
-
-      // Derive buyer state PDA (it will be created if not exists)
       const [buyerState] = anchor.web3.PublicKey.findProgramAddressSync(
-        [Buffer.from("buyer"), presaleState.toBuffer(), publicKey.toBuffer()],
-        program.programId
+        [Buffer.from("buyer"), PRESALE_STATE.toBuffer(), publicKey.toBuffer()],
+        PROGRAM_ID
       );
 
-      console.log("buyerstate");
+      // Use the correct discriminator
+      const discriminator = Buffer.from([
+        0x31, 0x39, 0x7c, 0xc2, 0xf0, 0x14, 0xd8, 0x66,
+      ]);
 
-      // Amount to pay (in lamports)
-      //const lamports = new anchor.BN(0.001 * anchor.web3.LAMPORTS_PER_SOL); // 0.001 SOL
+      const data = Buffer.concat([
+        discriminator,
+        lamports.toArrayLike(Buffer, "le", 8),
+      ]);
 
-      const lamports = new anchor.BN(1_000_000); // 0.001 SOL
+      console.log("Using EXACT account setup from working transaction:");
 
-      console.log("🚀 Buying with SOL...", {
-        buyer: publicKey,
-        presaleState,
-        treasurySol,
-        buyerState,
-        systemProgram: SystemProgram.programId,
+      // EXACT account order from working Playground transaction
+      const instruction = new anchor.web3.TransactionInstruction({
+        keys: [
+          { pubkey: publicKey, isSigner: true, isWritable: true }, // Account #1: buyer (WritableSigner)
+          { pubkey: PRESALE_STATE, isSigner: false, isWritable: true }, // Account #2: presale_state (Writable)
+          { pubkey: publicKey, isSigner: true, isWritable: true }, // Account #3: ??? (WritableSigner) - This seems wrong!
+          { pubkey: buyerState, isSigner: false, isWritable: true }, // Account #4: buyer_state (Writable)
+          {
+            pubkey: anchor.web3.SystemProgram.programId,
+            isSigner: false,
+            isWritable: false,
+          }, // Account #5: system_program
+        ],
+        programId: PROGRAM_ID,
+        data: data,
       });
-      console.log(lamports);
-      const tx = await program.methods
-        .buyWithSol(lamports)
-        .accounts({
-          buyer: publicKey,
-          presaleState: presaleState,
-          treasurySol: treasurySol,
-          buyerState: buyerState,
-          systemProgram: SystemProgram.programId,
-        })
-        .rpc();
 
-      console.log("✅ Success! Tx:", tx);
-      console.log(
-        `View on Explorer: https://explorer.solana.com/tx/${tx}?cluster=devnet`
-      );
-      alert("✅ Success! ");
+      const transaction = new anchor.web3.Transaction().add(instruction);
+      transaction.feePayer = publicKey;
+      transaction.recentBlockhash = (
+        await connection.getLatestBlockhash()
+      ).blockhash;
+
+      console.log("Sending transaction with EXACT Playground account order...");
+      const signed = await signTransaction(transaction);
+      const signature = await connection.sendRawTransaction(signed.serialize());
+
+      await connection.confirmTransaction(signature);
+      ///setStageRaised(n); //where n is any number
+      setStageRaised((s) => s + 1);
+
+      console.log("✅ SUCCESS! Transaction:", signature);
     } catch (err: any) {
-      console.log(err);
-      // alert(err.message);
+      console.log("Error:", err);
+      if (err.logs) {
+        console.log("Full logs:", err.logs);
+      }
     }
   }
-
   const InputCaretIcon = () => (
     <svg
       xmlns='http://www.w3.org/2000/svg'
@@ -395,7 +393,7 @@ export default function RightBox() {
                 lineHeight: "19px",
               }}
             >
-              {`${currency}${stageRaised}`}
+              {`${currency}${formatAmount(stageRaised)}`}
             </Typography>
             <Typography
               variant='subtitle2'
@@ -408,7 +406,7 @@ export default function RightBox() {
                 lineHeight: "19px",
               }}
             >
-              /{`${currency}${totalRaised}`}
+              /{`${currency}${formatAmount(totalRaised)}`}
             </Typography>
           </Box>
         </Grid>
@@ -631,12 +629,12 @@ export default function RightBox() {
       {/* hash */}
       <>
         {/* divider */}
-        <Box sx={{ width: "100%", px: px, mt: "15px" }}>
+        <Box sx={{ width: "100%", px: px, mt: "25px" }}>
           <Divider sx={{ borderColor: "#C1A059" }} />
           <Divider sx={{ borderColor: "#FBD88E" }} />
         </Box>
         {/* hash */}
-        <Typography
+        {/* <Typography
           variant='subtitle2'
           align='center'
           sx={{
@@ -654,16 +652,16 @@ export default function RightBox() {
             i18nKey='connectWallet.hash'
             components={{ highlight: <span style={{ color: "#0000FD" }} /> }}
           />
-        </Typography>
+        </Typography> */}
         {/* divider */}
-        <Box sx={{ width: "100%", px: px }}>
+        {/* <Box sx={{ width: "100%", px: px }}>
           <Divider sx={{ borderColor: "#C1A059" }} />
           <Divider sx={{ borderColor: "#FBD88E" }} />
-        </Box>
+        </Box> */}
       </>
       {/* input */}
       <>
-        <Box sx={{ width: "100%", px: px, mt: "20px" }}>
+        <Box sx={{ width: "100%", px: px, mt: "25px" }}>
           <TextField
             select
             fullWidth
@@ -793,32 +791,46 @@ export default function RightBox() {
                 variant='outlined'
                 value={
                   inputAmount && !isNaN(parseFloat(inputAmount))
-                    ? selectedToken === "sol"
-                      ? formatNumber(Number(inputAmount) / solToUSD)
-                      : selectedToken === "usdc"
-                      ? formatNumber(Number(inputAmount) / usdcToUSD)
-                      : ""
+                    ? formatAmount(
+                        calculateSnmi(
+                          Number(inputAmount),
+                          selectedToken as "sol" | "usdc"
+                        )
+                      )
                     : ""
                 }
                 slotProps={{
                   input: {
                     readOnly: true,
-                    endAdornment: selectedToken &&
-                      servers.find((s) => s.value === selectedToken) && (
-                        <InputAdornment position='end'>
-                          <img
-                            src={
-                              servers.find((s) => s.value === selectedToken)
-                                .icon
-                            }
-                            style={{
-                              width: "28px",
-                              height: "28px",
-                              borderRadius: "50%",
-                            }}
-                          />
-                        </InputAdornment>
-                      ),
+                    // endAdornment: selectedToken &&
+                    //   servers.find((s) => s.value === selectedToken) && (
+                    //     <InputAdornment position='end'>
+                    //       <img
+                    //         src={
+                    //           servers.find((s) => s.value === selectedToken)
+                    //             .icon
+                    //         }
+                    //         style={{
+                    //           width: "28px",
+                    //           height: "28px",
+                    //           borderRadius: "50%",
+                    //         }}
+                    //       />
+                    //     </InputAdornment>
+                    //   ),
+                    endAdornment: (
+                      <InputAdornment position='end'>
+                        <img
+                          src={"/dev/snmi.png"}
+                          alt='snmi'
+                          style={{
+                            width: "28px",
+                            height: "28px",
+                            borderRadius: "50%",
+                          }}
+                        />
+                      </InputAdornment>
+                    ),
                   },
                 }}
                 sx={inputSx}
@@ -883,7 +895,8 @@ export default function RightBox() {
                           lineHeight: "23px",
                         }}
                       >
-                        {userBalance} {selectedToken.toUpperCase()}
+                        {formatAmount(userBalance)}{" "}
+                        {selectedToken.toUpperCase()}
                       </Typography>
                     </Grid>
                   </Grid>
@@ -926,14 +939,14 @@ export default function RightBox() {
                         lineHeight: "23px",
                       }}
                     >
-                      {currency}
-                      {formatAmount(
+                      {formatNumber(
                         selectedToken === "sol"
-                          ? solToUSD
+                          ? snmiToSol
                           : selectedToken === "usdc"
-                          ? usdcToUSD
+                          ? snmiToUsdc
                           : 0
                       )}
+                      SNMI
                     </Typography>
                   </Grid>
                 </Grid>
@@ -987,66 +1000,74 @@ export default function RightBox() {
           },
         }}
       >
-        <WalletMultiButton
-          disabled={connecting}
-          style={{
-            width: "100%",
-            fontFamily: muiTheme.typography.fontFamily,
-            background:
-              "linear-gradient(180deg, #E9ED00 0%, #ACDD25 48%, #08D745 100%)",
-            borderRadius: "4px",
-            border: "2px solid #fff",
-            fontWeight: 500,
-            padding: "16px 19px",
-            color:
-              muiTheme.palette.mode === "dark"
-                ? muiTheme.palette.background.default
-                : muiTheme.palette.primary.dark,
-            fontSize: "16px",
-            lineHeight: "23px",
-            display: "flex",
-            justifyContent: "center",
-          }}
-        >
-          {connecting
-            ? t("connectWallet.connecting")
-            : connected
-            ? t("connectWallet.connected")
-            : t("connectWallet.connectWallet")}
-        </WalletMultiButton>
+        {connected ? (
+          <Button
+            variant='contained'
+            color='primary'
+            fullWidth
+            sx={{
+              background:
+                "linear-gradient(180deg, #E9ED00 0%, #ACDD25 48%, #08D745 100%)",
+              borderRadius: "4px",
+              border: "2px solid #fff",
+              fontWeight: 500,
+              px: "19px",
+              py: "16px",
+              color: (theme) =>
+                theme.palette.mode === "dark"
+                  ? "background.default"
+                  : "primary.dark",
+              fontSize: "16px",
+              lineHeight: "23px",
+            }}
+            onClick={() => {
+              if (selectedToken && inputAmount) {
+                if (selectedToken === "sol") buyWithSol(Number(inputAmount));
+                else if (selectedToken === "usdc")
+                  buyWithUsdc(Number(inputAmount));
+              }
+            }}
+          >
+            {t("header.buy")}
+          </Button>
+        ) : (
+          <WalletMultiButton
+            disabled={connecting}
+            style={{
+              width: "100%",
+              fontFamily: muiTheme.typography.fontFamily,
+              background:
+                "linear-gradient(180deg, #E9ED00 0%, #ACDD25 48%, #08D745 100%)",
+              borderRadius: "4px",
+              border: "2px solid #fff",
+              fontWeight: 500,
+              padding: "16px 19px",
+              color:
+                muiTheme.palette.mode === "dark"
+                  ? muiTheme.palette.background.default
+                  : muiTheme.palette.primary.dark,
+              fontSize: "16px",
+              lineHeight: "23px",
+              display: "flex",
+              justifyContent: "center",
+            }}
+          >
+            {connecting
+              ? t("connectWallet.connecting")
+              : connected
+              ? t("connectWallet.connected")
+              : t("connectWallet.connectWallet")}
+          </WalletMultiButton>
+        )}
       </Box>
 
       <Grid
         container
-        justifyContent='space-between'
+        justifyContent='flex-end'
         alignItems='center'
         sx={{ width: "100%", px: px, mt: "31px" }}
         gap='4px'
       >
-        <Grid>
-          {connected && (
-            <Typography
-              variant='subtitle2'
-              sx={{
-                fontSize: "10px",
-                fontWeight: 500,
-                textDecoration: "underline",
-                textTransform: "uppercase",
-                color: "text.primary",
-                cursor: "pointer",
-              }}
-              onClick={() => {
-                if (selectedToken && inputAmount) {
-                  if (selectedToken === "sol") buyWithSol(Number(inputAmount));
-                  else if (selectedToken === "usdc")
-                    buyWithUsdc(Number(inputAmount));
-                }
-              }}
-            >
-              {t("header.buy")}
-            </Typography>
-          )}
-        </Grid>
         <Grid>
           <Typography
             variant='subtitle2'

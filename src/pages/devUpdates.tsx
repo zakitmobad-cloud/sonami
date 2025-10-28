@@ -2,7 +2,7 @@ import { Box, Grid, useMediaQuery } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import Layout from "@/components/common/layout";
 import LeftTopBox from "@/components/leftTopBox";
-import LeftBottomBox from "@/components/chain/leftBottomBox";
+import LeftBottomBox from "@/components/devUpdates/leftBottomBox";
 import ActionButtons from "@/components/ActionButtons";
 import RightBox from "@/components/rightBox";
 import Social from "@/components/social";
@@ -29,10 +29,10 @@ const Index = () => {
           }}
         >
           <LeftTopBox
-            headingText={t("chain.leftTopBox.heading")}
-            buttonText={t("chain.leftTopBox.button")}
-            mainnetText={t("chain.leftTopBox.mainnet")}
-            stackingRewardText={t("chain.leftTopBox.stackingReward")}
+            headingText={t("devUpdates.leftTopBox.heading")}
+            buttonText={t("devUpdates.leftTopBox.button")}
+            mainnetText={t("devUpdates.leftTopBox.mainnet")}
+            stackingRewardText={t("devUpdates.leftTopBox.stackingReward")}
           />
           {!matchesSM && (
             <>

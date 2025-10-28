@@ -26,8 +26,10 @@ export default function LeftBottomBox() {
           <img
             src='/dev/tokenomics.png'
             style={{
-              width: matchesSM ? "100%" : matchesXL ? "75%" : "80%",
+              width: matchesSM ? "100%" : "auto",
+              //width: matchesSM ? "100%" : matchesXL ? "75%" : "80%",
               height: matchesSM ? "100%" : matchesXL ? "75%" : "80%",
+              maxWidth: "650px",
             }}
           />
         </Grid>

@@ -114,11 +114,11 @@
       "title": "How to Buy",
       "step": "Step",
       "steps": [
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sit amet risus sollicitudin, lobortis justo non, ultricies quam. In sollicitudin vestibulum tellus vitae finibus.",
-        "Vivamus lacinia tempor justo vel fermentum. Vestibulum metus massa, mattis non massa a, blandit dignissim metus. Proin interdum orci ut arcu dapibus, sed dictum elit mollis. Duis nec enim bibendum, cursus tortor eu, egestas elit.",
-        "Cras ullamcorper sapien mauris, sit amet rhoncus dolor sodales non.",
-        "Fusce fringilla massa id orci dictum, eu facilisis augue rutrum. Maecenas id imperdiet massa, et aliquam metus. Donec tempus ante tempor nibh cursus condimentum. Phasellus quis risus quam. Donec ac magna et lectus sagittis accumsan. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. ",
-        "Duis placerat sem dui. Pellentesque sit amet malesuada risus. Duis ut fermentum nulla, a aliquam eros. Cras tincidunt nisi non malesuada consequat. Integer vulputate vel elit vitae finibus. Vivamus placerat sem nisi, ac consequat ante placerat lacinia. Nullam gravida est odio, vel consequat nunc semper vitae."
+        "Install Phantom or MetaMask, create a new wallet, and save the seed phrase. Add the Solana network via “Add Network” if you're using MetaMask.",
+        "Connect your wallet",
+        "If you want to change the payment token, click on the token icon to change it.",
+        "Input the amount you want to spend or the the amount of SNMI Tokens you want to buy. Make sure that your wallet balance has a sufficient amount to cover the purchase and gas fees.",
+        "Click \"Buy SNMI\". Approve the transaction in your wallet. Check your SNMI Tokens in the \"SNMI Balance\" field."
       ],
       "gotIt": "Got it"
     }
@@ -204,6 +204,21 @@
           "description": "Aliquam ac ornare turpis, eu pharetra dolor. Phasellus porttitor luctus fermentum. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;  Etiam consequat mi quis elit malesuad"
         }
       }
+    }
+  },
+  "devUpdates": {
+    "leftTopBox": {
+      "heading": "Solana Layer 2 has arrived //",
+      "button": "Launching on major exchanges",
+      "mainnet": "SoNami Mainnet",
+      "stackingReward": "62% staking rewards"
+    },
+    "leftBottomBox": {
+      "backToHome": "Back To Home",
+      "back": "back",
+      "whitePaper": "Read Whitepaper",
+      "title": "Development Updates",
+      "description": "SoNami is the next evolution in Layer 2 technology, delivering epic customization, efficiency, and performance. It neutralizes the Solana pain points: network congestion, failed transactions, and scalability limitations, while amplifying the strengths of Solana."
     }
   }
 }

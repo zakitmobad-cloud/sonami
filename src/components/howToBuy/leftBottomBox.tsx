@@ -18,6 +18,7 @@ export default function LeftBottomBox() {
     {
       title: t("howToBuy.leftBottomBox.1.title"),
       description: t("howToBuy.leftBottomBox.1.description"),
+      buttonUrl: "https://phantom.com/",
       buttonText: t("howToBuy.leftBottomBox.1.download"),
       img: "/dev/how-to-buy-1.png",
       icons: ["/dev/how-to-buy-1-icon1.png"],
@@ -26,11 +27,7 @@ export default function LeftBottomBox() {
       title: t("howToBuy.leftBottomBox.2.title"),
       description: t("howToBuy.leftBottomBox.2.description"),
       img: "/dev/how-to-buy-2.png",
-      icons: [
-        "/dev/how-to-buy-2-icon1.png",
-        "/dev/how-to-buy-2-icon2.png",
-        "/dev/how-to-buy-2-icon3.png",
-      ],
+      icons: ["/dev/sol.png"],
     },
     {
       title: t("howToBuy.leftBottomBox.3.title"),
@@ -154,6 +151,11 @@ export default function LeftBottomBox() {
                   "&:hover": {
                     backgroundColor: "transparent",
                   },
+                }}
+                onClick={() => {
+                  if (step.buttonUrl) {
+                    window.open(step.buttonUrl, "_blank");
+                  }
                 }}
               >
                 {step.buttonText || "Hidden"}

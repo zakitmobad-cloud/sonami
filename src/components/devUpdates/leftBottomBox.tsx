@@ -1,178 +1,197 @@
-import { Link } from "react-router-dom";
-import { Box, Grid, Typography, Divider, useMediaQuery } from "@mui/material";
-import { useTranslation } from "react-i18next";
+import { Box, Grid, Typography, useMediaQuery, useTheme } from "@mui/material";
 import LeftBottomBoxLayout from "../leftBottomBoxLayout";
-export default function LeftBottomBox() {
-  const matchesSM = useMediaQuery((theme) => theme.breakpoints.down(1150));
-  const matches450 = useMediaQuery((theme) => theme.breakpoints.down(450));
+import { useTranslation } from "react-i18next";
 
+export default function LeftBottomBox() {
+  const muiTheme = useTheme();
+  const matchesSM = useMediaQuery((theme) => theme.breakpoints.down(1150));
   const { t } = useTranslation();
 
-  const downloadWhitePaper = () => {
-    window.open("/whitepaper.pdf", "_blank");
-  };
+  const steps = t("devUpdates.leftBottomBox.steps", {
+    returnObjects: true,
+  }) as {
+    title: string;
+    date: string;
+    description: string;
+  }[];
   return (
-    <LeftBottomBoxLayout sx={{ px: 0 }}>
+    <LeftBottomBoxLayout>
+      {!matchesSM && (
+        <Box
+          sx={{
+            position: "absolute",
+            //right: "-48px",
+            top: "27px",
+            right: "-40px",
+
+            zIndex: 120,
+          }}
+        >
+          <img
+            src='/dev/plant.png'
+            style={{
+              rotate: "45deg",
+              width: "108px",
+              height: "73px",
+              userSelect: "none",
+            }}
+            draggable={false}
+          />
+        </Box>
+      )}
+
       <Box
         sx={{
           display: "flex",
           flexDirection: "column",
           position: "relative",
           width: "100%",
-          pt: { xs: "0px ", md: "32px" },
-          px: { xs: "15px", md: "30px" },
+          zIndex: 1,
+          backgroundColor: "transparent",
+          m: {
+            xs: "15px 0px",
+            md: matchesSM ? "24px 0px 35px 0px" : "56px 0px 35px 0px",
+          },
+
+          pb: steps.length < 3 && !matchesSM ? "90px" : "0px",
+          px: { xs: "0px", md: matchesSM ? "0px" : "17px" },
+          maxHeight: "390px",
+          overflowY: "auto",
+          "::-webkit-scrollbar": { width: "16px" },
+          "::-webkit-scrollbar-track": {
+            backgroundColor: muiTheme.palette.background.paper,
+          },
+          "::-webkit-scrollbar-thumb": {
+            backgroundColor:
+              muiTheme.palette.mode === "dark"
+                ? muiTheme.palette.background.default
+                : muiTheme.palette.primary["600"],
+            borderRadius: "0px",
+          },
         }}
       >
-        <Grid
-          container
-          justifyContent='space-between'
-          alignItems='center'
-          sx={{ mt: "36px" }}
-        >
-          <Grid sx={{ flex: 1 }}>
-            <Link to='/' style={{ textDecoration: "none" }}>
-              <Grid
-                container
-                wrap='nowrap'
-                alignItems='center'
-                sx={{ gap: "15px" }}
-              >
-                <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  width='8'
-                  height='15'
-                  fill='none'
-                  viewBox='0 0 8 15'
-                >
-                  <path
-                    stroke='url(#paint0_linear_16_3116)'
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeWidth='2'
-                    d='m7 13.5-6-6 6-6'
-                  ></path>
-                  <defs>
-                    <linearGradient
-                      id='paint0_linear_16_3116'
-                      x1='4'
-                      x2='4'
-                      y1='1.5'
-                      y2='13.5'
-                      gradientUnits='userSpaceOnUse'
-                    >
-                      <stop stopColor='#0404AE'></stop>
-                      <stop offset='0.48' stopColor='#2575DD'></stop>
-                      <stop offset='1' stopColor='#0404AE'></stop>
-                    </linearGradient>
-                  </defs>
-                </svg>
-                <Typography
-                  variant='subtitle1'
-                  sx={{
-                    background:
-                      "linear-gradient(180deg, #0404AE 0%, #2575DD 48%, #0404AE 100%)",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    backgroundClip: "text", // For Firefox (not always needed)
-                    color: "transparent",
-                    lineHeight: "22px",
-                    fontWeight: 500,
-                    textTransform: "uppercase",
-                    fontSize: matches450 ? "12px" : "16px",
-                  }}
-                >
-                  {matches450
-                    ? t("devUpdates.leftBottomBox.back")
-                    : t("devUpdates.leftBottomBox.backToHome")}
-                </Typography>
-              </Grid>
-            </Link>
-          </Grid>
-          <Grid>
-            <Typography
-              variant='subtitle1'
-              sx={{
-                background:
-                  "linear-gradient(180deg, #0404AE 0%, #2575DD 48%, #0404AE 100%)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text", // For Firefox (not always needed)
-                color: "transparent",
-                lineHeight: "22px",
-                fontWeight: 500,
-                fontSize: matches450 ? "12px" : "16px",
-                textTransform: "uppercase",
-                pb: "4px",
-                position: "relative",
-                cursor: "pointer",
-              }}
-              onClick={downloadWhitePaper}
-            >
-              <Box
-                sx={{
-                  position: "absolute",
-                  bottom: "-2px",
-                  width: "100%",
-                  height: "1px",
-                  background:
-                    "linear-gradient(180deg, #0404AE 0%, #2575DD 48%, #0404AE 100%)",
-                }}
-              />
-
-              {t("devUpdates.leftBottomBox.whitePaper")}
-            </Typography>
-          </Grid>
-        </Grid>
-
-        <Typography
-          variant='h1'
-          sx={{
-            mt: "33px",
-            color: (theme) =>
-              theme.palette.mode === "dark" ? "text.primary" : "primary.main",
-            fontSize: "30px",
-            lineHeight: "36px",
-            fontWeight: 500,
-            textTransform: "uppercase",
-            whiteSpace: "break-spaces",
-          }}
-        >
-          {t("devUpdates.leftBottomBox.title")}
-        </Typography>
-
-        <Typography
-          variant='body1'
-          sx={{
-            mt: "30px",
-            fontFamily: "Inter",
-            color: (theme) =>
-              theme.palette.mode === "dark" ? "text.primary" : "#000",
-            fontSize: "17px",
-            lineHeight: "28px",
-            fontWeight: 700,
-          }}
-        >
-          {t("devUpdates.leftBottomBox.description")}
-        </Typography>
-
         {!matchesSM && (
-          <Grid
+          <Box
             sx={{
-              mx: "auto",
-              mt: "33px",
-              mb: { lg: "160px", xs: "30px" },
-              width: "30%",
+              position: "absolute",
+              //right: "-48px",
+              height: "95%",
+              top: "15px",
+              right: "5%",
+              zIndex: 0,
             }}
           >
-            <Divider
-              sx={{
-                borderWidth: "2px",
-                borderColor: (theme) =>
-                  theme.palette.mode === "dark" ? "text.primary" : "#439ED7",
+            <img
+              src='/dev/snake.png'
+              style={{
+                userSelect: "none",
+                height: "inherit",
+                //rotate: "-180deg",
               }}
+              draggable={false}
             />
-          </Grid>
+          </Box>
         )}
+        {!matchesSM && (
+          <Box
+            sx={{
+              position: "absolute",
+              //right: "-48px",
+              top: "5%",
+              left: "20px",
+              height: "95%",
+              zIndex: 0,
+              opacity: 0.5,
+            }}
+          >
+            <img
+              src='/dev/fish.png'
+              style={{
+                userSelect: "none",
+                //rotate: "-180deg",
+              }}
+              draggable={false}
+            />
+          </Box>
+        )}
+        {!matchesSM && (
+          <Box
+            sx={{
+              position: "absolute",
+              //right: "-48px",
+              bottom: "0px",
+              left: "20%",
+              zIndex: 0,
+              opacity: 0.5,
+              //height: "95%",
+            }}
+          >
+            <img
+              src='/dev/plant.png'
+              style={{
+                userSelect: "none",
+                //rotate: "-180deg",
+              }}
+              draggable={false}
+            />
+          </Box>
+        )}
+        {steps.map((step, i) => (
+          <Grid
+            key={i}
+            sx={{
+              width: "100%",
+              border: `2px solid ${muiTheme.palette.background.paper}`,
+              borderTop:
+                i > 0 ? 0 : `2px solid ${muiTheme.palette.background.paper}`,
+              backgroundColor: `${muiTheme.palette.background.paper}80`,
+              backdropFilter: "blur(14px)",
+              p: { xs: "30px 15px", md: "35px 35px" },
+            }}
+          >
+            <Box sx={{ display: "flex", alignItems: "flex-end", gap: "24px" }}>
+              <Typography
+                variant='subtitle2'
+                sx={{
+                  fontSize: "21px",
+                  fontWeight: 500,
+                  color: (theme) =>
+                    theme.palette.mode === "dark" ? "text.primary" : "#000",
+                  textTransform: "uppercase",
+                  lineHeight: "25px",
+                }}
+              >
+                {step.title}
+              </Typography>
+              <Typography
+                variant='subtitle2'
+                sx={{
+                  fontSize: "16px",
+                  fontWeight: 500,
+                  color: (theme) =>
+                    theme.palette.mode === "dark" ? "text.primary" : "#000",
+                  textTransform: "uppercase",
+                  lineHeight: "25px",
+                }}
+              >
+                {step.date}
+              </Typography>
+            </Box>
+            <Typography
+              variant='body1'
+              sx={{
+                mt: "11px",
+                fontFamily: "Inter",
+                color: (theme) =>
+                  theme.palette.mode === "dark" ? "text.primary" : "#000",
+                fontSize: "16px",
+                lineHeight: "24px",
+              }}
+            >
+              {step.description}
+            </Typography>
+          </Grid>
+        ))}
       </Box>
     </LeftBottomBoxLayout>
   );

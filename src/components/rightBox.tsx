@@ -211,7 +211,10 @@ export default function RightBox() {
       if (!publicKey || !signTransaction) {
         throw new Error("Wallet not connected");
       }
-
+      if (Number(inputAmount) > userBalance) {
+        alert("Insufficient balance");
+        return;
+      }
       const lamports = new anchor.BN(solAmount * anchor.web3.LAMPORTS_PER_SOL);
 
       const [buyerState] = anchor.web3.PublicKey.findProgramAddressSync(
@@ -721,6 +724,7 @@ export default function RightBox() {
                   const numericRegex = /^\d*\.?\d*$/;
                   if (numericRegex.test(value)) setInputAmount(value);
                 }}
+                error={(Number(inputAmount) > userBalance) as boolean}
                 slotProps={{
                   input: {
                     endAdornment: (

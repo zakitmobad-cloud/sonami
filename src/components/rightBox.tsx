@@ -89,6 +89,121 @@ export default function RightBox() {
   const snmiToUsdc = 0.002;
   const STEP = 0.1;
 
+  async function getBuyerStateAddress(presaleStateAddress, buyerWalletAddress) {
+    const [buyerStatePda] = await PublicKey.findProgramAddress(
+      [
+        Buffer.from("buyer"),
+        presaleStateAddress.toBuffer(),
+        buyerWalletAddress.toBuffer(),
+      ],
+      PROGRAM_ID // Your program ID
+    );
+    return buyerStatePda;
+  }
+
+  // Fetch the account data
+  async function getWalletTokens(
+    connection,
+    presaleStateAddress,
+    buyerWalletAddress
+  ) {
+    const buyerStateAddress = await getBuyerStateAddress(
+      presaleStateAddress,
+      buyerWalletAddress
+    );
+
+    try {
+      const buyerStateAccount = await connection.getAccountInfo(
+        buyerStateAddress
+      );
+
+      if (!buyerStateAccount) {
+        console.log("No purchases found for this wallet");
+        return null;
+      }
+
+      // Deserialize the data according to your BuyerState structure
+      const buyerData = deserializeBuyerState(buyerStateAccount.data);
+
+      return {
+        allocatedTokens: buyerData.allocatedTokens,
+        claimedTokens: buyerData.claimedTokens,
+        unclaimedTokens: buyerData.allocatedTokens - buyerData.claimedTokens,
+        totalPurchases: buyerData.buys,
+        spentSOL: buyerData.spent_lamports,
+        spentUSDC: buyerData.spent_usdc,
+        lastPurchase: buyerData.last_buy_ts,
+      };
+    } catch (error) {
+      console.error("Error fetching buyer state:", error);
+      return null;
+    }
+  }
+
+  // Deserialize the BuyerState account data
+  function deserializeBuyerState(data) {
+    // Skip the 8-byte discriminator
+    const dataWithoutDiscriminator = data.slice(8);
+
+    // Deserialize according to your struct:
+    // buys: u64, allocated_tokens: u64, claimed_tokens: u64,
+    // spent_lamports: u64, spent_usdc: u64, last_buy_ts: i64
+    const view = new DataView(dataWithoutDiscriminator.buffer);
+
+    let offset = 0;
+    const buys = Number(view.getBigUint64(offset, true));
+    offset += 8;
+
+    const allocatedTokens = Number(view.getBigUint64(offset, true));
+    offset += 8;
+
+    const claimedTokens = Number(view.getBigUint64(offset, true));
+    offset += 8;
+
+    const spentLamports = Number(view.getBigUint64(offset, true));
+    offset += 8;
+
+    const spentUSDC = Number(view.getBigUint64(offset, true));
+    offset += 8;
+
+    const lastBuyTs = Number(view.getBigInt64(offset, true));
+
+    return {
+      buys,
+      allocatedTokens,
+      claimedTokens,
+      spent_lamports: spentLamports,
+      spent_usdc: spentUSDC,
+      last_buy_ts: lastBuyTs,
+    };
+  }
+
+  // Example usage
+  async function checkWalletTokens() {
+    const presaleStateAddress = new PublicKey(PRESALE_STATE); // Your presale state address
+    const walletToCheck = new PublicKey(publicKey); // The wallet you want to check
+
+    const tokenInfo = await getWalletTokens(
+      connection,
+      presaleStateAddress,
+      walletToCheck
+    );
+
+    if (tokenInfo) {
+      console.log(`Wallet ${walletToCheck.toString()} token info:`);
+      console.log(`- Total Allocated: ${tokenInfo.allocatedTokens} tokens`);
+      console.log(`- Already Claimed: ${tokenInfo.claimedTokens} tokens`);
+      console.log(`- Still Unclaimed: ${tokenInfo.unclaimedTokens} tokens`);
+      console.log(`- Total Purchases: ${tokenInfo.totalPurchases}`);
+      console.log(`- Spent SOL: ${tokenInfo.spentSOL / 1e9} SOL`);
+      console.log(`- Spent USDC: ${tokenInfo.spentUSDC / 1e6} USDC`);
+    } else {
+      console.log("No purchase history found for this wallet");
+    }
+  }
+  useEffect(() => {
+    checkWalletTokens();
+  }, []);
   useEffect(() => {
     const fetchBalance = async () => {
       if (!publicKey) {

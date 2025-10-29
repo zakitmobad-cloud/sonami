@@ -36,6 +36,7 @@ import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import idl from "@/lib/idl.json";
 import { formatAmount, formatNumber } from "@/lib/utils";
 import HowToBuyDialog from "./howToBuyModal";
+import PresaleCountdown from "./PresaleCountdown";
 
 const NETWORK = import.meta.env.VITE_NETWORK;
 const PROGRAM_ID = new PublicKey(import.meta.env.VITE_PROGRAM_ID);
@@ -1091,11 +1092,14 @@ export default function RightBox() {
 
       <Grid
         container
-        justifyContent='flex-end'
+        justifyContent='space-between'
         alignItems='center'
         sx={{ width: "100%", px: px, mt: "31px" }}
         gap='4px'
       >
+        <Grid>
+          <PresaleCountdown targetDate='2025-11-02T00:00:00' small />
+        </Grid>
         <Grid>
           <Typography
             variant='subtitle2'

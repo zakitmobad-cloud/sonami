@@ -32,7 +32,7 @@ export default function LeftBottomBox() {
     {
       title: t("howToBuy.leftBottomBox.3.title"),
       description: t("howToBuy.leftBottomBox.3.description"),
-      buttonText: t("howToBuy.leftBottomBox.3.stack"),
+      //buttonText: t("howToBuy.leftBottomBox.3.stack"),
       img: "/dev/how-to-buy-3.png",
     },
   ];

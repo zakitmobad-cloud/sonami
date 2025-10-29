@@ -7,12 +7,12 @@ export default function Social() {
     {
       label: "twitter",
       icon: "/dev/twitter.svg",
-      url: "https://x.com/",
+      url: "https://x.com/SonamiLayer2",
     },
     {
       label: "twitter",
       icon: "/dev/telegram.svg",
-      url: "https://telegram.org/",
+      url: "https://t.me/sonamitoken",
     },
   ];
   return (

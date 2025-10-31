@@ -8,7 +8,10 @@ import posthog from "posthog-js";
 if (typeof window !== "undefined") {
   posthog.init(import.meta.env.VITE_PUBLIC_POSTHOG_KEY, {
     api_host: import.meta.env.VITE_PUBLIC_POSTHOG_HOST,
-    autocapture: true, // automatically track clicks & pageviews
+    autocapture: true, // automatically track clicks & pageviews,
+    session_recording: {
+      maskAllInputs: true,
+    }, // enable session recording
   });
 }
 

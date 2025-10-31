@@ -180,6 +180,7 @@ export default function LeftBottomBox() {
             <Typography
               variant='body1'
               sx={{
+                fontWeight: 600,
                 mt: "11px",
                 fontFamily: "Inter",
                 color: (theme) =>

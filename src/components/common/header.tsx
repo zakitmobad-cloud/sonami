@@ -13,6 +13,7 @@ import {
   SwipeableDrawer,
   useMediaQuery,
   Grid,
+  useTheme,
 } from "@mui/material";
 import {
   Brightness4,
@@ -24,10 +25,14 @@ import {
 import { useTranslation } from "react-i18next";
 import { useThemeContext } from "@/contexts/ThemeContext";
 import { useLocation } from "react-router-dom";
+import { useWallet } from "@solana/wallet-adapter-react";
+import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 
 const Header = () => {
+  const { connecting, connected } = useWallet();
   const location = useLocation();
   const matchesSM = useMediaQuery((theme) => theme.breakpoints.down(1150));
+  const muiTheme = useTheme();
   const { mode, toggleTheme } = useThemeContext();
   const { t, i18n } = useTranslation();
   const [openSidebar, setOpenSidebar] = useState(false);
@@ -69,7 +74,7 @@ const Header = () => {
     </Link>
   );
 
-  const buyButton = (
+  const buyButton = connected ? (
     <Button
       variant='contained'
       color='primary'
@@ -83,9 +88,39 @@ const Header = () => {
         px: "19px",
         color: "#000",
       }}
+      onClick={() => {
+        let buyButton = document.getElementById("buyButton");
+        if (buyButton) {
+          buyButton.click();
+        }
+      }}
     >
       {t("header.buy")}
     </Button>
+  ) : (
+    <WalletMultiButton
+      disabled={connecting}
+      style={{
+        width: "100%",
+        fontFamily: muiTheme.typography.fontFamily,
+        background:
+          "linear-gradient(180deg, #E9ED00 0%, #ACDD25 48%, #08D745 100%)",
+        borderRadius: "14px",
+        border: "2px solid #fff",
+        fontWeight: 500,
+        padding: "16px 19px",
+        color: "#000",
+        fontSize: "12px",
+        display: "flex",
+        justifyContent: "center",
+      }}
+    >
+      {connecting
+        ? t("connectWallet.connecting")
+        : connected
+        ? t("connectWallet.connected")
+        : t("connectWallet.connectWallet")}
+    </WalletMultiButton>
   );
 
   const langInput = (

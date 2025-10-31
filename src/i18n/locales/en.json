@@ -89,7 +89,7 @@
   },
   "howToBuy": {
     "leftTopBox": {
-      "heading": "SONAMI is fast //",
+      "heading": "SoNami- The First Solana L2 //",
       "button": "Launching on major exchanges",
       "mainnet": "SoNami Mainnet",
       "stackingReward": "62% staking rewards"
@@ -125,7 +125,7 @@
   },
   "tokenomics": {
     "leftTopBox": {
-      "heading": "SONAMI is fast //",
+      "heading": "SoNami The First Solana L2 //",
       "button": "Launching on major exchanges",
       "mainnet": "SoNami Mainnet",
       "stackingReward": "62% staking rewards"
@@ -185,23 +185,23 @@
     },
     "leftBottomBox": {
       "backToHome": "Back To Home",
-      "title": "The Solana / Ethereum MultiChain",
+      "title": "The Solana MultiChain",
       "slider": {
         "1": {
           "title": "SoNami: The Best New Cryptocurrency",
-          "description": "Experience seamless performance with our Solana Layer 2, optimized for speed and scalability, while enjoying the robust liquidity and compatibility of our multi-chain token on Ethereum and Solana."
+          "description": "Experience seamless performance with our Solana Layer 2, optimized for speed and scalability, while enjoying the robust liquidity and compatibility of our multi-chain token on Solana."
         },
         "2": {
           "title": "Lightning-Fast Trading",
           "description": "Whether you're deploying a DeFi app or trading memecoins, SoNami’s off-chain execution and parallel processing deliver ultra-low latency and near-instant finality — even under extreme demand."
         },
         "3": {
-          "title": "Ut aliquam neque et dignissim",
-          "description": "Suspendisse eleifend pharetra porta. Aenean placerat eu felis sed euismod. Integer finibus sed felis id porttitor"
+          "title": "Zero Down-Time",
+          "description": "SuspeDuring times of high-traffic, Solana has notoriously seen times of failed transactions, network congestion, and even down time. Sonami scalability and off-chain execution solves that"
         },
         "4": {
-          "title": "Aliquam ac ornare turpis",
-          "description": "Aliquam ac ornare turpis, eu pharetra dolor. Phasellus porttitor luctus fermentum. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;  Etiam consequat mi quis elit malesuad"
+          "title": "Meme Coin Galaxy",
+          "description": "Meme coins are driving the solana, and some would say the entire blockchain industry forward. Sonami customizability and transaction bundling make high volume trading infinitely scalable, ensuring the best meme coin experience."
         }
       }
     }
@@ -218,7 +218,7 @@
         {
           "title": "Dev Update #2",
           "date": "10th Jan 2025",
-          "description": "Bridging and Data Availibility. We are making strides in bridging and data availibility of SONAMI"
+          "description": "Data Availability & Rollup Infrastructure. Benchmarking and refining our infrastructure to enhance performance."
         },
         {
           "title": "Dev Update #1",

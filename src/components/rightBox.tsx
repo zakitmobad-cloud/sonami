@@ -58,7 +58,6 @@ const servers = [
 export default function RightBox() {
   const { connection } = useConnection();
   const { publicKey, connecting, connected, signTransaction } = useWallet();
-  const wallet = useWallet();
 
   const matches350 = useMediaQuery((theme) => theme.breakpoints.down(350));
   const muiTheme = useTheme();
@@ -273,57 +272,87 @@ export default function RightBox() {
 
   async function buyWithUsdc(usdcAmount: number) {
     try {
+      if (!publicKey || !signTransaction) {
+        throw new Error("Wallet not connected");
+      }
       if (Number(usdcAmount) > userBalance) {
         alert("Insufficient balance");
         return;
       }
-      // Connect wallet
-      const provider = new anchor.AnchorProvider(connection, wallet, {
-        preflightCommitment: "confirmed",
-      });
-      anchor.setProvider(provider);
 
-      // Load your program IDL (if you have presale.json from build)
-      const idl = await anchor.Program.fetchIdl(PROGRAM_ID, provider);
-      const program = new anchor.Program(idl, provider);
+      // Convert USDC amount (1 token = 0.019 USDC)
+      const amount = new anchor.BN(usdcAmount * 1_000_000);
 
-      const buyer = publicKey;
-      console.log("Buyer wallet:", buyer.toBase58());
-
-      // Derive buyer's USDC ATA
-      const buyerUsdc = await getAssociatedTokenAddress(USDC_MINT, buyer);
-
-      // Derive buyer state PDA
-      const [buyerState] = PublicKey.findProgramAddressSync(
-        [Buffer.from("buyer"), PRESALE_STATE.toBuffer(), buyer.toBuffer()],
+      // Derive PDAs
+      const [buyerState] = anchor.web3.PublicKey.findProgramAddressSync(
+        [Buffer.from("buyer"), PRESALE_STATE.toBuffer(), publicKey.toBuffer()],
         PROGRAM_ID
       );
 
-      console.log("Buyer USDC:", buyerUsdc.toBase58());
-      console.log("Buyer state:", buyerState.toBase58());
+      const buyerUsdc = await getAssociatedTokenAddress(USDC_MINT, publicKey);
 
-      // Convert amount (e.g. 5 USDC = 5_000_000)
-      const amount = new anchor.BN(usdcAmount * 1_000_000);
+      // Use the correct discriminator for buy_with_usdc
+      const discriminator = Buffer.from([
+        0x21, 0xd1, 0xd3, 0x7c, 0x37, 0x8e, 0x7a, 0xd4,
+      ]);
 
-      const txSig = await program.methods
-        .buyWithUsdc(amount)
-        .accounts({
-          buyer,
-          presaleState: PRESALE_STATE,
-          usdcMint: USDC_MINT,
-          buyerUsdc,
-          treasuryUsdc: TREASURY_USDC,
-          buyerState,
-          tokenProgram: anchor.utils.token.TOKEN_PROGRAM_ID,
-          systemProgram: anchor.web3.SystemProgram.programId,
-        })
-        .rpc();
+      const data = Buffer.concat([
+        discriminator,
+        amount.toArrayLike(Buffer, "le", 8),
+      ]);
 
-      alert(`✅ Purchase successful!\nTx: ${txSig}`);
-      console.log("✅ Bought with USDC, tx:", txSig);
-    } catch (err) {
-      console.error("❌ Transaction failed:", err);
-      alert("Transaction failed: " + err.message);
+      console.log("Buying with USDC:", {
+        usdcAmount: usdcAmount,
+        tokensReceived: (usdcAmount / 0.019).toFixed(2),
+        rawAmount: amount.toString(),
+        buyer: publicKey.toString(),
+      });
+
+      const instruction = new anchor.web3.TransactionInstruction({
+        keys: [
+          { pubkey: publicKey, isSigner: true, isWritable: true },
+          { pubkey: PRESALE_STATE, isSigner: false, isWritable: true },
+          { pubkey: USDC_MINT, isSigner: false, isWritable: false },
+          { pubkey: buyerUsdc, isSigner: false, isWritable: true },
+          { pubkey: TREASURY_USDC, isSigner: false, isWritable: true },
+          { pubkey: buyerState, isSigner: false, isWritable: true },
+          {
+            pubkey: anchor.utils.token.TOKEN_PROGRAM_ID,
+            isSigner: false,
+            isWritable: false,
+          },
+          {
+            pubkey: anchor.web3.SystemProgram.programId,
+            isSigner: false,
+            isWritable: false,
+          },
+        ],
+        programId: PROGRAM_ID,
+        data: data,
+      });
+
+      const transaction = new anchor.web3.Transaction().add(instruction);
+      transaction.feePayer = publicKey;
+      transaction.recentBlockhash = (
+        await connection.getLatestBlockhash()
+      ).blockhash;
+
+      console.log("Sending USDC transaction...");
+      const signed = await signTransaction(transaction);
+      const signature = await connection.sendRawTransaction(signed.serialize());
+
+      await connection.confirmTransaction(signature);
+
+      console.log("✅ USDC PURCHASE SUCCESS! Transaction:", signature);
+
+      setStageRaised((s) => s + 1);
+      setUserBalance((u) => u - Number(inputAmount));
+    } catch (err: any) {
+      console.log("Error in buyWithUsdc:", err);
+      if (err.logs) {
+        console.log("Full logs:", err.logs);
+      }
+      console.log("USDC purchase failed: " + (err.message || "Unknown error"));
     }
   }
   async function buyWithSol(solAmount: number) {
@@ -796,11 +825,23 @@ export default function RightBox() {
             components={{ highlight: <span style={{ color: "#0000FD" }} /> }}
           />
         </Typography> */}
+        <Typography
+          variant='subtitle2'
+          align='center'
+          sx={{
+            px: px,
+            py: "15px",
+            color: (theme) =>
+              theme.palette.mode === "dark" ? "text.primary" : "primary.dark",
+          }}
+        >
+          <PresaleCountdown targetDate='2025-11-06T00:00:00' small />
+        </Typography>
         {/* divider */}
-        {/* <Box sx={{ width: "100%", px: px }}>
+        <Box sx={{ width: "100%", px: px }}>
           <Divider sx={{ borderColor: "#C1A059" }} />
           <Divider sx={{ borderColor: "#FBD88E" }} />
-        </Box> */}
+        </Box>
       </>
       {/* input */}
       <>
@@ -1171,6 +1212,7 @@ export default function RightBox() {
                   buyWithUsdc(Number(inputAmount));
               }
             }}
+            id='buyButton'
           >
             {t("header.buy")}
           </Button>
@@ -1212,9 +1254,7 @@ export default function RightBox() {
         sx={{ width: "100%", px: px, mt: "31px" }}
         gap='4px'
       >
-        <Grid>
-          <PresaleCountdown targetDate='2025-11-02T00:00:00' small />
-        </Grid>
+        <Grid></Grid>
         <Grid>
           <Typography
             variant='subtitle2'

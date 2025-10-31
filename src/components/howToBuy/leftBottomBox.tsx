@@ -21,7 +21,7 @@ export default function LeftBottomBox() {
       buttonUrl: "https://phantom.com/",
       buttonText: t("howToBuy.leftBottomBox.1.download"),
       img: "/dev/how-to-buy-1.png",
-      icons: ["/dev/how-to-buy-1-icon1.png"],
+      icons: ["/dev/Phantom.png"],
     },
     {
       title: t("howToBuy.leftBottomBox.2.title"),

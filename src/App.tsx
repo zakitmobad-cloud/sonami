@@ -9,7 +9,7 @@ import PresaleCountdown from "./components/PresaleCountdown";
 import { Close as CloseIcon } from "@mui/icons-material";
 
 const AppComponent = () => {
-  const [presaleModal, setPresaleModal] = useState(true);
+  const [presaleModal, setPresaleModal] = useState(false);
 
   const modal = (
     <Dialog

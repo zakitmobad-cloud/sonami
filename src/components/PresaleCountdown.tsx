@@ -38,14 +38,11 @@ const PresaleCountdown: React.FC<CountdownProps> = ({
 
   if (small)
     return (
-      <Typography
-        variant='subtitle2'
-        sx={{ color: "text.primary", fontWeight: 400, fontSize: "10px" }}
-      >
+      <>
         Presale ends in {formatNumber(timeLeft.days)}d :{" "}
         {formatNumber(timeLeft.hours)}h : {formatNumber(timeLeft.minutes)}m :{" "}
         {formatNumber(timeLeft.seconds)}s
-      </Typography>
+      </>
     );
   return (
     <Box

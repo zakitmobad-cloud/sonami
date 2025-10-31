@@ -136,15 +136,15 @@ export default function LeftTopBox({
                 //lineHeight: "18px",
                 boxShadow: "none",
                 borderRadius: "100px",
-                pl: "15px",
-                pr: "30px",
+                px: "35px",
                 py: "11.7px",
                 zIndex: 18,
+                textAlign: "center",
               }}
               startIcon={
                 <CircleIcon sx={{ fontSize: "20px", color: "#88EA79" }} />
               }
-              endIcon={<KeyboardArrowDownIcon sx={{ color: "text.primary" }} />}
+              //endIcon={<KeyboardArrowDownIcon sx={{ color: "text.primary" }} />}
             >
               {mainnetText}
             </Button>

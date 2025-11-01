@@ -22,10 +22,12 @@
     "@solana/wallet-adapter-react-ui": "^0.9.39",
     "@solana/wallet-adapter-wallets": "^0.19.37",
     "@solana/web3.js": "^1.98.4",
+    "firebase": "^12.5.0",
     "i18next": "^25.5.3",
     "posthog-js": "^1.282.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-hot-toast": "^2.6.0",
     "react-i18next": "^16.0.0",
     "react-router-dom": "^6.30.1"
   },

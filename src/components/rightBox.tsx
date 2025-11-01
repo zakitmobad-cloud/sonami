@@ -14,6 +14,7 @@ import {
   useMediaQuery,
   Select,
   Button,
+  CircularProgress,
 } from "@mui/material";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
@@ -32,11 +33,17 @@ import {
 } from "@solana/web3.js";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
+import toast from "react-hot-toast";
 
 import idl from "@/lib/idl.json";
 import { formatAmount, formatNumber } from "@/lib/utils";
 import HowToBuyDialog from "./howToBuyModal";
 import PresaleCountdown from "./PresaleCountdown";
+import {
+  initializeStageRaised,
+  listenStageRaised,
+  updateStageRaised,
+} from "@/services/stageService";
 
 const NETWORK = import.meta.env.VITE_NETWORK;
 const PROGRAM_ID = new PublicKey(import.meta.env.VITE_PROGRAM_ID);
@@ -247,6 +254,21 @@ export default function RightBox() {
     fetchBalance();
   }, [publicKey, selectedToken, connection]);
 
+  useEffect(() => {
+    // Initialize Firestore doc with default value if missing
+    initializeStageRaised();
+
+    // Listen for realtime updates
+    const unsubscribe = listenStageRaised((value) => setStageRaised(value));
+
+    // Cleanup listener on unmount
+    return () => unsubscribe();
+  }, []);
+
+  const handleupdateStageRaised = async (newValue) => {
+    await updateStageRaised(newValue);
+  };
+
   const handleIncrease = () => {
     setInputAmount((prev) => {
       if (prev === "" || isNaN(Number(prev))) return STEP.toFixed(1);
@@ -279,7 +301,10 @@ export default function RightBox() {
         alert("Insufficient balance");
         return;
       }
-
+      setLoading({
+        active: true,
+        action: "buyWithUsdc",
+      });
       // Convert USDC amount (1 token = 0.019 USDC)
       const amount = new anchor.BN(usdcAmount * 1_000_000);
 
@@ -345,14 +370,24 @@ export default function RightBox() {
 
       console.log("✅ USDC PURCHASE SUCCESS! Transaction:", signature);
 
-      setStageRaised((s) => s + 1);
+      handleupdateStageRaised(stageRaised + 1);
+
       setUserBalance((u) => u - Number(inputAmount));
+      setInputAmount("");
+
+      toast.success("Purchase successful!");
     } catch (err: any) {
       console.log("Error in buyWithUsdc:", err);
       if (err.logs) {
         console.log("Full logs:", err.logs);
       }
       console.log("USDC purchase failed: " + (err.message || "Unknown error"));
+      toast.error("Purchase failed: " + (err.message || "Unknown error"));
+    } finally {
+      setLoading({
+        active: false,
+        action: "",
+      });
     }
   }
   async function buyWithSol(solAmount: number) {
@@ -364,6 +399,10 @@ export default function RightBox() {
         alert("Insufficient balance");
         return;
       }
+      setLoading({
+        active: true,
+        action: "buyWithSol",
+      });
       const lamports = new anchor.BN(solAmount * anchor.web3.LAMPORTS_PER_SOL);
 
       const [buyerState] = anchor.web3.PublicKey.findProgramAddressSync(
@@ -408,15 +447,34 @@ export default function RightBox() {
 
       const transaction = new anchor.web3.Transaction().add(instruction);
       transaction.feePayer = publicKey;
-      transaction.recentBlockhash = (
-        await connection.getLatestBlockhash()
-      ).blockhash;
 
-      console.log("Sending transaction...");
+      const { blockhash, lastValidBlockHeight } =
+        await connection.getLatestBlockhash();
+      transaction.recentBlockhash = blockhash;
+      transaction.lastValidBlockHeight = lastValidBlockHeight;
+
+      // transaction.recentBlockhash = (
+      //   await connection.getLatestBlockhash()
+      // ).blockhash;
+
+      console.log("Sign transaction freshly");
       const signed = await signTransaction(transaction);
-      const signature = await connection.sendRawTransaction(signed.serialize());
+      console.log("Sending transaction...");
+      //const signature = await connection.sendRawTransaction(signed.serialize());
+      const signature = await connection.sendRawTransaction(
+        signed.serialize(),
+        {
+          skipPreflight: false,
+          preflightCommitment: "confirmed",
+        }
+      );
 
-      await connection.confirmTransaction(signature);
+      //await connection.confirmTransaction(signature);
+      // Confirm properly using the same blockhash context
+      await connection.confirmTransaction(
+        { signature, blockhash, lastValidBlockHeight },
+        "confirmed"
+      );
 
       console.log("✅ SUCCESS! Transaction:", signature);
 
@@ -433,13 +491,21 @@ export default function RightBox() {
         treasuryBalanceAfter / anchor.web3.LAMPORTS_PER_SOL,
         "SOL"
       );
-      setStageRaised((s) => s + 1);
+      handleupdateStageRaised(stageRaised + 1);
       setUserBalance((u) => u - Number(inputAmount));
+      setInputAmount("");
+      toast.success("Purchase successful!");
     } catch (err: any) {
       console.log("Error:", err);
       if (err.logs) {
         console.log("Full logs:", err.logs);
       }
+      toast.error("Purchase failed: " + (err.message || "Unknown error"));
+    } finally {
+      setLoading({
+        active: false,
+        action: "",
+      });
     }
   }
 
@@ -1205,6 +1271,11 @@ export default function RightBox() {
               fontSize: "16px",
               lineHeight: "23px",
             }}
+            disabled={
+              loading.active &&
+              (loading.action === "buyWithSol" ||
+                loading.action === "buyWithUsdc")
+            }
             onClick={() => {
               if (selectedToken && inputAmount) {
                 if (selectedToken === "sol") buyWithSol(Number(inputAmount));
@@ -1212,6 +1283,13 @@ export default function RightBox() {
                   buyWithUsdc(Number(inputAmount));
               }
             }}
+            startIcon={
+              loading.active &&
+              (loading.action === "buyWithSol" ||
+                loading.action === "buyWithUsdc") ? (
+                <CircularProgress size={20} color='inherit' />
+              ) : null
+            }
             id='buyButton'
           >
             {t("header.buy")}

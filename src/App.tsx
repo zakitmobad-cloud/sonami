@@ -7,6 +7,7 @@ import i18n from "./i18n/config";
 import AppRoutes from "./Routes";
 import PresaleCountdown from "./components/PresaleCountdown";
 import { Close as CloseIcon } from "@mui/icons-material";
+import { Toaster } from "react-hot-toast";
 
 const AppComponent = () => {
   const [presaleModal, setPresaleModal] = useState(false);
@@ -50,6 +51,8 @@ const App = () => {
     <I18nextProvider i18n={i18n}>
       <ThemeProvider>
         <BrowserRouter>
+          <Toaster position='bottom-center' />
+
           <AppComponent />
         </BrowserRouter>
       </ThemeProvider>

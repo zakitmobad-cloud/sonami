@@ -39,9 +39,29 @@ const PresaleCountdown: React.FC<CountdownProps> = ({
   if (small)
     return (
       <>
-        Presale ends in {formatNumber(timeLeft.days)}d :{" "}
-        {formatNumber(timeLeft.hours)}h : {formatNumber(timeLeft.minutes)}m :{" "}
-        {formatNumber(timeLeft.seconds)}s
+        <span
+          style={{
+            color: "#006D1A", // dark text for contrast
+
+            fontWeight: 500,
+          }}
+        >
+          Presale ends in
+        </span>{" "}
+        <span
+          style={{
+            background:
+              "linear-gradient(180deg, #0404AE 0%, #2575DD 48%, #0404AE 100%)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            backgroundClip: "text", // For Firefox (not always needed)
+            color: "#303164",
+            letterSpacing: "1px",
+          }}
+        >
+          {formatNumber(timeLeft.days)}d : {formatNumber(timeLeft.hours)}h :{" "}
+          {formatNumber(timeLeft.minutes)}m : {formatNumber(timeLeft.seconds)}s
+        </span>
       </>
     );
   return (

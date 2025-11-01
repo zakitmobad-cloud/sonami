@@ -1,36 +1,33 @@
 // stageService.ts
 import { db } from "../lib/firebaseConfig";
-import { doc, getDoc, setDoc, onSnapshot } from "firebase/firestore";
+import { ref, set, onValue, get } from "firebase/database";
 
 /**
  * Initialize stageRaised with default value if not exists
  */
 export async function initializeStageRaised(defaultValue = 2320867) {
-  const stageDocRef = doc(db, "stats", "stageRaised");
-  const docSnap = await getDoc(stageDocRef);
-
-  if (!docSnap.exists()) {
-    await setDoc(stageDocRef, { value: defaultValue });
+  const stageRef = ref(db, "stageRaised");
+  const snapshot = await get(stageRef);
+  if (!snapshot.exists()) {
+    await set(stageRef, defaultValue);
   }
 }
 
 /**
- * Update stageRaised
+ * Update stageRaised value
  */
 export async function updateStageRaised(value: number) {
-  const stageDocRef = doc(db, "stats", "stageRaised");
-  await setDoc(stageDocRef, { value }, { merge: true });
+  const stageRef = ref(db, "stageRaised");
+  await set(stageRef, value);
 }
 
 /**
- * Listen to real-time updates
+ * Listen for real-time updates
  */
 export function listenStageRaised(callback: (value: number) => void) {
-  const stageDocRef = doc(db, "stats", "stageRaised");
-  return onSnapshot(stageDocRef, (snapshot) => {
-    if (snapshot.exists()) {
-      const data = snapshot.data();
-      callback(data.value);
-    }
+  const stageRef = ref(db, "stageRaised");
+  onValue(stageRef, (snapshot) => {
+    const data = snapshot.val();
+    callback(data);
   });
 }

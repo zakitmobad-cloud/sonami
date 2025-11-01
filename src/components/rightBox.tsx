@@ -32,18 +32,22 @@ import {
   clusterApiUrl,
 } from "@solana/web3.js";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
-import { useConnection, useWallet } from "@solana/wallet-adapter-react";
+import {
+  useAnchorWallet,
+  useConnection,
+  useWallet,
+} from "@solana/wallet-adapter-react";
 import toast from "react-hot-toast";
 
 import idl from "@/lib/idl.json";
 import { formatAmount, formatNumber } from "@/lib/utils";
 import HowToBuyDialog from "./howToBuyModal";
 import PresaleCountdown from "./PresaleCountdown";
-import {
-  initializeStageRaised,
-  listenStageRaised,
-  updateStageRaised,
-} from "@/services/stageService";
+// import {
+//   initializeStageRaised,
+//   listenStageRaised,
+//   updateStageRaised,
+// } from "@/services/stageService";
 
 const NETWORK = import.meta.env.VITE_NETWORK;
 const PROGRAM_ID = new PublicKey(import.meta.env.VITE_PROGRAM_ID);
@@ -64,7 +68,8 @@ const servers = [
 //const connection = new Connection(NETWORK);
 export default function RightBox() {
   const { connection } = useConnection();
-  const { publicKey, connecting, connected, signTransaction } = useWallet();
+  const { publicKey, connecting, connected } = useWallet();
+  const { signTransaction } = useAnchorWallet();
 
   const matches350 = useMediaQuery((theme) => theme.breakpoints.down(350));
   const muiTheme = useTheme();
@@ -254,19 +259,18 @@ export default function RightBox() {
     fetchBalance();
   }, [publicKey, selectedToken, connection]);
 
-  useEffect(() => {
-    // Initialize Firestore doc with default value if missing
-    initializeStageRaised();
+  // useEffect(() => {
+  //   initializeStageRaised(); // Set default if not exist
 
-    // Listen for realtime updates
-    const unsubscribe = listenStageRaised((value) => setStageRaised(value));
-
-    // Cleanup listener on unmount
-    return () => unsubscribe();
-  }, []);
+  //   // Realtime listener
+  //   listenStageRaised((value) => {
+  //     setStageRaised(value);
+  //   });
+  // }, []);
 
   const handleupdateStageRaised = async (newValue) => {
-    await updateStageRaised(newValue);
+    //await updateStageRaised(newValue);
+    setStageRaised(newValue);
   };
 
   const handleIncrease = () => {
